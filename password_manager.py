@@ -9,7 +9,8 @@ your_password = input("Type your password: ")
 def view():
     """ FUNCTION FOR VIEWING PASSWORDS FROM TEXT FILE """
     with open("passwords.txt", "r", encoding="utf8") as f:
-        if re.search(rf"^[MASTER].*{master_password}", f.readline().rstrip()):
+        master = f.readline().rstrip().split("|")
+        if check_password_hash(master[1], master_password):
             for i in f.readlines():
                 if re.search(rf"{your_password}$", i.rstrip()):
                     data = i.rstrip()
@@ -22,7 +23,7 @@ def add():
     """ FUNCTION FOR ADDING NAME/PASSWORDS IN TEXT FILE"""
     name = input("Account name: ")
     pwd = input("Password: ")
-    pwd = generate_password_hash(pwd, method="scrypt") + master_password
+    pwd = generate_password_hash(pwd, method="scrypt") + your_password
     with open("passwords.txt", "a", encoding="utf8") as f:
         f.write(name + "|" + pwd + "\n")
 
