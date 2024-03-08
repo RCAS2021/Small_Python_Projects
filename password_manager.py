@@ -1,6 +1,15 @@
 """ ENCRYPT AND SAVE PASSWORD ON TEXT FILE """
 from os import sys
+from cryptography.fernet import Fernet
+
 master_password = input("Type your master password: ")
+
+'''
+def write_key():
+    key = Fernet.generate_key()
+    with open("key.key", "wb") as key_file:
+        key_file.write(key)
+'''
 
 def view():
     """ FUNCTION FOR VIEWING PASSWORDS FROM TEXT FILES """
