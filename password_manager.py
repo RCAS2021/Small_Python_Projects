@@ -11,9 +11,9 @@ def view():
     with open("passwords.txt", "r", encoding="utf8") as f:
         if re.search(rf"^[MASTER].*{master_password}", f.readline().rstrip()):
             for i in f.readlines():
-                data = i.rstrip()
-                user, passw = data.split("|")
-                if re.search(rf"{your_password}$", passw):
+                if re.search(rf"{your_password}$", i.rstrip()):
+                    data = i.rstrip()
+                    user, passw = data.split("|")
                     print(f"{user = }, {passw = }")
         else:
             print("Incorrect Master Password")
