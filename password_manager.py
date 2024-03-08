@@ -6,7 +6,9 @@ def view():
     """ FUNCTION FOR VIEWING PASSWORDS FROM TEXT FILES """
     with open("passwords.txt", "r", encoding="utf8") as f:
         for i in f.readlines():
-            print(i)
+            data = i.rstrip()
+            user, passw = data.split("|")
+            print(f"{user = }, {passw = }")
 
 def add():
     """ FUNCTION FOR ADDING NAME/PASSWORDS IN TEXT FILE"""
@@ -17,15 +19,13 @@ def add():
         f.write(name + "|" + pwd + "\n")
 
 while True:
-    mode = input("Would you like to add a new password or view existing ones (view, add)? ").lower()
+    mode = input("Would you like to add a new password or view existing ones (view, add, quit)? ").lower()
     if mode == "view":
         view()
     elif mode == "add":
         add()
+    elif mode == "quit":
+        sys.exit()
     else:
         print("Invalid mode")
         continue
-
-    stop = input("Quit? Y/N ").lower()
-    if stop != "n":
-        sys.exit()
