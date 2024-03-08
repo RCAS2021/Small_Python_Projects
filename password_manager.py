@@ -1,15 +1,9 @@
 """ ENCRYPT AND SAVE PASSWORD ON TEXT FILE """
 from os import sys
-from cryptography.fernet import Fernet
+from werkzeug.security import generate_password_hash, check_password_hash
 
 master_password = input("Type your master password: ")
 
-'''
-def write_key():
-    key = Fernet.generate_key()
-    with open("key.key", "wb") as key_file:
-        key_file.write(key)
-'''
 
 def view():
     """ FUNCTION FOR VIEWING PASSWORDS FROM TEXT FILES """
@@ -23,7 +17,7 @@ def add():
     """ FUNCTION FOR ADDING NAME/PASSWORDS IN TEXT FILE"""
     name = input("Account name: ")
     pwd = input("Password: ")
-
+    pwd = generate_password_hash(pwd, method="scrypt") + master_password
     with open("passwords.txt", "a", encoding="utf8") as f:
         f.write(name + "|" + pwd + "\n")
 
