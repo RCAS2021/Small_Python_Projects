@@ -4,6 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import re
 
 master_password = input("Type your master password: ")
+your_password = input("Type your password: ")
 
 def view():
     """ FUNCTION FOR VIEWING PASSWORDS FROM TEXT FILE """
@@ -12,7 +13,8 @@ def view():
             for i in f.readlines():
                 data = i.rstrip()
                 user, passw = data.split("|")
-                print(f"{user = }, {passw = }")
+                if re.search(rf"{your_password}$", passw):
+                    print(f"{user = }, {passw = }")
         else:
             print("Incorrect Master Password")
 
