@@ -1,17 +1,20 @@
 """ ENCRYPT AND SAVE PASSWORD ON TEXT FILE """
 from os import sys
 from werkzeug.security import generate_password_hash, check_password_hash
+import re
 
 master_password = input("Type your master password: ")
 
-
 def view():
-    """ FUNCTION FOR VIEWING PASSWORDS FROM TEXT FILES """
+    """ FUNCTION FOR VIEWING PASSWORDS FROM TEXT FILE """
     with open("passwords.txt", "r", encoding="utf8") as f:
-        for i in f.readlines():
-            data = i.rstrip()
-            user, passw = data.split("|")
-            print(f"{user = }, {passw = }")
+        if re.search(rf"^[MASTER].*{master_password}", f.readline().rstrip()):
+            for i in f.readlines():
+                data = i.rstrip()
+                user, passw = data.split("|")
+                print(f"{user = }, {passw = }")
+        else:
+            print("Incorrect Master Password")
 
 def add():
     """ FUNCTION FOR ADDING NAME/PASSWORDS IN TEXT FILE"""
