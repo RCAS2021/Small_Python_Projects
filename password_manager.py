@@ -9,15 +9,11 @@ your_password = input("Type your password: ")
 def view():
     """ FUNCTION FOR VIEWING PASSWORDS FROM TEXT FILE """
     with open("passwords.txt", "r", encoding="utf8") as f:
-        master = f.readline().rstrip().split("|")
-        if check_password_hash(master[1], master_password):
-            for i in f.readlines():
-                if re.search(rf"{your_password}$", i.rstrip()):
-                    data = i.rstrip()
-                    user, passw = data.split("|")
-                    print(f"{user = }, {passw = }")
-        else:
-            print("Incorrect Master Password")
+        for i in f.readlines():
+            if re.search(rf"{your_password}$", i.rstrip()):
+                data = i.rstrip()
+                user, passw = data.split("|")
+                print(f"{user = }, {passw = }")
 
 def add():
     """ FUNCTION FOR ADDING NAME/PASSWORDS IN TEXT FILE"""
@@ -28,13 +24,19 @@ def add():
         f.write(name + "|" + pwd + "\n")
 
 while True:
-    mode = input("Would you like to add a new password or view existing ones (view, add, quit)? ").lower()
-    if mode == "view":
-        view()
-    elif mode == "add":
-        add()
-    elif mode == "quit":
-        sys.exit()
+    with open("passwords.txt", "r", encoding="utf8") as f:
+        master = f.readline().rstrip().split("|")
+    if check_password_hash(master[1], master_password):
+        mode = input("Would you like to add a new password or view existing ones (view, add, quit)? ").lower()
+        if mode == "view":
+            view()
+        elif mode == "add":
+            add()
+        elif mode == "quit":
+            sys.exit()
+        else:
+            print("Invalid mode")
+            continue
     else:
-        print("Invalid mode")
-        continue
+        print("Incorrect Master Password, exiting")
+        sys.exit()
