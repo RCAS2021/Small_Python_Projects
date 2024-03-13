@@ -2,3 +2,4 @@ passwords.txt
 venv/*
 gitignore
 gitattributes
+__pycache__
