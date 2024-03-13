@@ -3,6 +3,7 @@ from os import sys
 import os
 from werkzeug.security import generate_password_hash, check_password_hash
 import re
+from password_validation import verify_password_strength
 
 master_password = input("Type your master password: ")
 your_password = input("Type your password: ")
@@ -19,11 +20,12 @@ def view():
 def add():
     """ FUNCTION FOR ADDING NAME/PASSWORDS IN TEXT FILE"""
     name = input("Account name: ")
-    pwd = input("Password: ")
-    pwd = generate_password_hash(pwd, method="scrypt") + your_password
-    with open("passwords.txt", "a", encoding="utf8") as f:
-        f.write(name + "|" + pwd + "\n")
-
+    pwd = verify_password_strength()
+    if pwd != "Error":
+        pwd = generate_password_hash(pwd, method="scrypt") + your_password
+        with open("passwords.txt", "a", encoding="utf8") as f:
+            f.write(name + "|" + pwd + "\n")
+        return "Password added"
 
 def add_master():
     """ FUNCTION FOR ADDING MASTER - RUN FIRST AND ONLY ONE TIME PER TEXT FILE """
