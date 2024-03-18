@@ -24,11 +24,14 @@ class App:
         entry2 = customtkinter.CTkEntry(master=frame, placeholder_text="Password", show="*")
         entry2.pack(pady=12, padx=10)
 
+        checkbox = customtkinter.CTkCheckBox(master=frame, text="Remember Me")
+        checkbox.pack(pady=12, padx=10)
+
         button = customtkinter.CTkButton(master=frame, text="Login", command=login)
         button.pack(pady=12, padx=10)
 
-        checkbox = customtkinter.CTkCheckBox(master=frame, text="Remember Me")
-        checkbox.pack(pady=12, padx=10)
+        button2 = customtkinter.CTkButton(master=frame, text="Exit", command=master.destroy)
+        button2.pack(pady=12, padx=10)
 
 
 if __name__ == "__main__":

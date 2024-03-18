@@ -15,6 +15,7 @@ class CSVPlotter:
         plot_menu = ctk.CTkOptionMenu(master=self.root, values=[*self.plot_types], variable=self.plot_type_var, command=self.update_plot)
         plot_menu.pack(padx=10, pady=10)
 
+        # Creating load CSV button
         load_button = ctk.CTkButton(self.root, text="Load CSV", command=self.load_csv)
         load_button.pack(padx=10, pady=10)
 
@@ -26,6 +27,13 @@ class CSVPlotter:
 
         self.df = None
 
+        # Creating exit button
+        exit_button = ctk.CTkButton(master=root, text="Exit", command=self.close_app)
+        exit_button.pack(padx=10, pady=10)
+
+    def close_app(self):
+        self.root.quit()
+    
     def load_csv(self):
         file_path = filedialog.askopenfilename()
         if file_path:
@@ -61,9 +69,6 @@ if __name__ == "__main__":
 
     # Creating root
     root = ctk.CTk()
-
-    # Setting dimensions
-    root.geometry("500x350")
 
     # Calling App
     app = CSVPlotter(root)
