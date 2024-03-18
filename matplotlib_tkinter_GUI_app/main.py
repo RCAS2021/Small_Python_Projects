@@ -1,5 +1,5 @@
-import tkinter as tk
-from tkinter import filedialog
+import customtkinter as ctk
+from customtkinter import filedialog
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
@@ -11,11 +11,11 @@ class CSVPlotter:
 
         # Drop down menu
         self.plot_types = ["Line Plot", "Bar Plot", "Scatter Plot"]
-        self.plot_type_var = tk.StringVar(value=self.plot_types[0])
-        plot_menu = tk.OptionMenu(self.root, self.plot_type_var, *self.plot_types, command=self.update_plot)
+        self.plot_type_var = ctk.StringVar(value=self.plot_types[0])
+        plot_menu = ctk.CTkOptionMenu(master=self.root, values=[*self.plot_types], variable=self.plot_type_var, command=self.update_plot)
         plot_menu.pack(padx=10, pady=10)
 
-        load_button = tk.Button(self.root, text="Load CSV", command=self.load_csv)
+        load_button = ctk.CTkButton(self.root, text="Load CSV", command=self.load_csv)
         load_button.pack(padx=10, pady=10)
 
         # Creating fig ax
@@ -53,6 +53,20 @@ class CSVPlotter:
             self.canvas.draw()
 
 if __name__ == "__main__":
-    root = tk.Tk()
+    # Setting appearance mode (light, dark or system)
+    ctk.set_appearance_mode("system")
+
+    # Seting color theme (blue, green or dark-blue)
+    ctk.set_default_color_theme("dark-blue")
+
+    # Creating root
+    root = ctk.CTk()
+
+    # Setting dimensions
+    root.geometry("500x350")
+
+    # Calling App
     app = CSVPlotter(root)
+
+    # Mainloop which will cause this toplevel to run infinitely
     root.mainloop()
