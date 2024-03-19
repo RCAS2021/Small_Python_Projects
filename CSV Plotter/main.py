@@ -3,6 +3,7 @@ from customtkinter import filedialog
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import matplotlib.patches as patches
 
 class CSVPlotter:
     def __init__(self, root):
@@ -12,6 +13,7 @@ class CSVPlotter:
         # Drop down menu
         self.plot_types = ["Line Plot", "Bar Plot", "Scatter Plot", "Pie"]
         self.plot_type_var = ctk.StringVar(value=self.plot_types[0])
+        self.old_plot="Line Plot"
         plot_menu = ctk.CTkOptionMenu(master=self.root, values=[*self.plot_types], variable=self.plot_type_var, command=self.update_plot)
         plot_menu.pack(padx=10, pady=10)
 
@@ -21,11 +23,14 @@ class CSVPlotter:
 
         # Creating fig ax
         self.fig, self.ax = plt.subplots()
+
+        # Creating canvas
         self.canvas = FigureCanvasTkAgg(self.fig, master=self.root)
-        self.widget = self.canvas.get_tk_widget()
-        self.widget.pack(padx=10, pady=10)
+        self.canvas.draw()
+        self.canvas.get_tk_widget().pack(padx=10, pady=10)
 
         self.df = None
+        
 
         # Creating exit button
         exit_button = ctk.CTkButton(master=root, text="Exit", command=self.close_app)
@@ -48,19 +53,46 @@ class CSVPlotter:
 
             self.ax.clear()
 
+            # Adding frames to 2D Charts
+            if plot_type != "Pie":
+                # Get the current Axes object
+                current_axes = plt.gca()
+                # Get the bounding box of the chart
+                bbox = plt.gca().get_window_extent()
+
+                # Convert the bounding box from display coordinates to Axes coordinates
+                trans = current_axes.transAxes.inverted()
+                x0, y0 = trans.transform((bbox.x0, bbox.y0))
+                x1, y1 = trans.transform((bbox.x1, bbox.y1))
+                width = x1 - x0
+                height = y1 - y0
+
+                # Add a frame
+                frame = patches.Rectangle((x0, y0), width, height, linewidth=1, edgecolor='black', fill=False, transform=current_axes.transAxes)
+                current_axes.add_patch(frame)
+
             if plot_type == "Line Plot":
                 self.ax.plot(self.df[x], self.df[y], label=f"{y} vs {x}")
+                self.ax.legend(loc="best")
             elif plot_type == "Bar Plot":
                 self.ax.bar(self.df[x], self.df[y], label=f"{y} vs {x}")
+                self.ax.legend(loc="best")
             elif plot_type == "Scatter Plot":
                 self.ax.scatter(self.df[x], self.df[y], label=f"{y} vs {x}")
+                self.ax.legend(loc="best")
             elif plot_type == "Pie":
-                explode = (0, 0.05, 0)
-                self.ax.pie(self.df[y], labels=self.df[x], autopct='%1.1f%%', explode=explode, shadow=True, startangle=90)
+                explode = (0, 0.05, 0, 0)
+                self.ax.pie(self.df[y], labels=self.df[x], autopct='%1.1f%%', explode=explode, shadow=True, startangle=90, labeldistance=0.45, pctdistance=0.63, textprops={'horizontalalignment': 'center', 'verticalalignment': 'center'}, wedgeprops={'linewidth': 1}, radius=0.5, center=(0.5, 0.5))
+                self.ax.legend(loc="lower right", ncol=len(self.df.columns))
+                self.ax.axis("equal")
 
+            # Set labels
             self.ax.set_xlabel(x)
             self.ax.set_ylabel(y)
-            self.ax.legend()
+
+            # Set aspect ratio to auto
+            self.ax.set_aspect('auto')
+            # Draws canvas
             self.canvas.draw()
 
 if __name__ == "__main__":
