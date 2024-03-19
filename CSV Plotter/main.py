@@ -10,7 +10,7 @@ class CSVPlotter:
         root.title("CSV Plotter")
 
         # Drop down menu
-        self.plot_types = ["Line Plot", "Bar Plot", "Scatter Plot"]
+        self.plot_types = ["Line Plot", "Bar Plot", "Scatter Plot", "Pie"]
         self.plot_type_var = ctk.StringVar(value=self.plot_types[0])
         plot_menu = ctk.CTkOptionMenu(master=self.root, values=[*self.plot_types], variable=self.plot_type_var, command=self.update_plot)
         plot_menu.pack(padx=10, pady=10)
@@ -33,7 +33,7 @@ class CSVPlotter:
 
     def close_app(self):
         self.root.quit()
-    
+
     def load_csv(self):
         file_path = filedialog.askopenfilename()
         if file_path:
@@ -54,6 +54,9 @@ class CSVPlotter:
                 self.ax.bar(self.df[x], self.df[y], label=f"{y} vs {x}")
             elif plot_type == "Scatter Plot":
                 self.ax.scatter(self.df[x], self.df[y], label=f"{y} vs {x}")
+            elif plot_type == "Pie":
+                explode = (0, 0.05, 0)
+                self.ax.pie(self.df[y], labels=self.df[x], autopct='%1.1f%%', explode=explode, shadow=True, startangle=90)
 
             self.ax.set_xlabel(x)
             self.ax.set_ylabel(y)
