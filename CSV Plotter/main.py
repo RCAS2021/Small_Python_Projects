@@ -23,7 +23,6 @@ class CSVPlotter:
 
         # Creating fig ax
         self.fig, self.ax = plt.subplots()
-        self.ax2 = self.ax.twinx()
 
         # Creating canvas
         self.canvas = FigureCanvasTkAgg(self.fig, master=self.root)
@@ -53,8 +52,11 @@ class CSVPlotter:
             y = self.df.columns[1]
             z = self.df.columns[2]
 
-            self.ax.cla()
-            self.ax2.cla()
+            # Clear the figure and all axes
+            self.fig.clear()
+
+            # Add new Axes object
+            self.ax = self.fig.add_subplot(111)
 
             # Adding frames to 2D Charts
             if plot_type != "Pie":
@@ -77,35 +79,52 @@ class CSVPlotter:
             if plot_type == "Line Plot":
                 self.ax.plot(self.df[x], self.df[y], label=f"{y} vs {x}")
                 self.ax.legend(loc="best")
+                self.ax.set_xlabel(x)
                 self.ax.set_ylabel(y)
             elif plot_type == "Bar Plot":
+                # Recreate the ax2 object dynamically
+                self.ax2 = self.ax.twinx()
+                # Setting y-axis range to be the same for both axes
+                ## Getting maximum Y axis value
+                ## Next, set_ylim
+                max_y = max(self.df.iloc[:,1].max(), self.df.iloc[:,2].max())
                 # Plotting first dataset on y-axis
                 self.ax.set_title("Animals X Quantity X Average_Age")
                 self.df.iloc[:,1].plot(kind="bar", color="red", ax=self.ax, width=0.4, position=1)
-                self.ax.set_ylabel(y)
-                self.ax.legend(loc="best")
+                self.ax.legend(loc="upper left")
+                self.ax.set_ylim(0, max_y+10)
+
                 # Plotting second dataset on second y-axis
                 self.df.iloc[:,2].plot(kind="bar", color="blue", ax=self.ax2, width=0.4, position=0)
-                self.ax2.legend(loc="best")
+                self.ax2.legend(loc="upper right")
+                self.ax2.set_ylim(0, max_y+10)
+
+                # Setting labels
+                self.ax.set_xlabel(x)
+                self.ax.set_ylabel(y)
                 self.ax2.set_ylabel(z)
+                # Aligning the y-axis to the left
+                self.ax.yaxis.set_label_position("left")
+                self.ax.yaxis.set_ticks_position("left")
                 # Aligning the secondary y-axis to the right
                 self.ax2.yaxis.set_label_position("right")
                 self.ax2.yaxis.set_ticks_position("right")
-
+                # Returning the x labels to animal names instead of index
+                x_values = range(len(self.df))
+                self.ax.set_xticks(x_values)  # Set x-ticks at each index
+                self.ax.set_xticklabels(self.df[x], rotation=0)  # Set x-tick labels to animal names
             elif plot_type == "Scatter Plot":
                 self.ax.scatter(self.df[x], self.df[y], label=f"{y} vs {x}")
                 self.ax.legend(loc="best")
+                self.ax.set_xlabel(x)
                 self.ax.set_ylabel(y)
             elif plot_type == "Pie":
                 explode = (0, 0.05, 0, 0)
                 self.ax.pie(self.df[y], labels=self.df[x], autopct='%1.1f%%', explode=explode, shadow=True, startangle=90, labeldistance=0.45, pctdistance=0.63, textprops={'horizontalalignment': 'center', 'verticalalignment': 'center'}, wedgeprops={'linewidth': 1}, radius=0.5, center=(0.5, 0.5))
                 self.ax.legend(loc="lower right", ncol=len(self.df.columns))
-                self.ax.set_ylabel(y)
                 self.ax.axis("equal")
-
-            # Set X label
-            self.ax.set_xlabel(x)
-
+                self.ax.set_xlabel(x)
+                self.ax.set_ylabel(y)
 
             # Set aspect ratio to auto
             self.ax.set_aspect('auto')
