@@ -23,6 +23,7 @@ class CSVPlotter:
 
         # Creating fig ax
         self.fig, self.ax = plt.subplots()
+        self.ax2 = self.ax.twinx()
 
         # Creating canvas
         self.canvas = FigureCanvasTkAgg(self.fig, master=self.root)
@@ -30,7 +31,7 @@ class CSVPlotter:
         self.canvas.get_tk_widget().pack(padx=10, pady=10)
 
         self.df = None
-        
+
 
         # Creating exit button
         exit_button = ctk.CTkButton(master=root, text="Exit", command=self.close_app)
@@ -50,6 +51,7 @@ class CSVPlotter:
             plot_type = self.plot_type_var.get()
             x = self.df.columns[0]
             y = self.df.columns[1]
+            z = self.df.columns[2]
 
             self.ax.clear()
 
@@ -75,8 +77,11 @@ class CSVPlotter:
                 self.ax.plot(self.df[x], self.df[y], label=f"{y} vs {x}")
                 self.ax.legend(loc="best")
             elif plot_type == "Bar Plot":
-                self.ax.bar(self.df[x], self.df[y], label=f"{y} vs {x}")
+                self.ax.set_title("Teste")
+                self.df.iloc[:,1].plot(kind="bar", color="red", ax=self.ax, width=0.4, position=1)
+                self.df.iloc[:,2].plot(kind="bar", color="blue", ax=self.ax2, width=0.4, position=0)
                 self.ax.legend(loc="best")
+                self.ax2.legend(loc="best")
             elif plot_type == "Scatter Plot":
                 self.ax.scatter(self.df[x], self.df[y], label=f"{y} vs {x}")
                 self.ax.legend(loc="best")
@@ -89,6 +94,7 @@ class CSVPlotter:
             # Set labels
             self.ax.set_xlabel(x)
             self.ax.set_ylabel(y)
+            self.ax2.set_ylabel(z)
 
             # Set aspect ratio to auto
             self.ax.set_aspect('auto')
