@@ -201,7 +201,7 @@ class CSVPlotter:
             # Pie chart works differently, so can't use the same methods, therefore it is excluded
             if plot_type != "Pie":
                 # Setting title
-                self.ax.set_title("Animals X Quantity X Average_Age")
+                self.ax.set_title(f"{self.df.columns[0]} X {self.df.columns[1]} X {self.df.columns[2]}")
 
                 # Synchronizes y axes
                 self.synchronize_y_axes(self.df, self.df.columns[1:])
@@ -225,15 +225,27 @@ class CSVPlotter:
         """ Function for inserting text in a textbox, used for any text statistic displaying """
         # Reactivates textbox
         self.textbox.configure(state="normal")
+
         # Deletes content inside textbox
         self.textbox.delete(1.0, "end")
+
         # Getting the animal with most quantity
-        most_animal = self.df.loc[self.df.Qtt == max(self.df.Qtt)]
-        # Getting animal type, for example: Dog
-        most_animal = str(most_animal['Animals'].values).strip('[]').strip("'")
+        max_quantity_index = self.df.iloc[:, 1].idxmax() # Get it's index
+        most_animal = self.df.iloc[max_quantity_index, 0]  # Get the animal type with the maximum quantity
+        max_quantity = self.df.iloc[max_quantity_index, 1]  # Get the maximum quantity
+
+        # Getting the animal with the biggest average age
+        max_average_age_index = self.df.iloc[:, 2].idxmax() # Get it's index
+        max_age_animal = self.df.iloc[max_average_age_index, 0] # Get animal type
+        max_age = self.df.iloc[max_average_age_index, 2] # Get animal age
+
         # Inserting f-string in textbox
-        self.textbox.insert("0.0", f"The biggest average age is: {max(self.df.Avg_Age)}\nThe animal type with most animals is: {most_animal} with {max(self.df.Qtt)} total\n" +
-                            f"There are {sum(self.df.Qtt)} animals in total\nThe average of all average ages is: {np.mean(self.df.Avg_Age)}")
+        self.textbox.insert("0.0", f"The biggest {self.df.columns[2]} is: {max_age}, which belongs to {max_age_animal}\n"
+                                 f"The {self.df.columns[0]} with most {self.df.columns[1]} is the {most_animal} with {max_quantity} total\n"
+                                 f"There are {len(self.df)} {self.df.columns[0]} in total\n"
+                                 f"The total {self.df.columns[1]} is: {self.df.iloc[:, 1].sum()}\n"
+                                 f"The average of {self.df.columns[2]} is: {np.mean(self.df.iloc[:, 2])}")
+
         # Deactivating textbox to be un-writable
         self.textbox.configure(state="disabled")
 
