@@ -101,8 +101,9 @@ class CSVPlotter:
         self.ax.set_xticks(x_values)  # Set x-ticks at each index
         self.ax.set_xticklabels(self.df[x], rotation=0)  # Set x-tick labels to animal names   
 
-    def plot_line(self, x, y):
+    def plot_line(self, x, y, z):
         self.ax.plot(self.df[x], self.df[y], label=f"{y} vs {x}")
+        self.ax.plot(self.df[x], self.df[z], label=f"{x} vs {z}")
         self.ax.legend(loc="best")
         self.ax.set_xlabel(x)
         self.ax.set_ylabel(y)
@@ -128,7 +129,7 @@ class CSVPlotter:
             self.ax = self.fig.add_subplot(111)
 
             if plot_type == "Line Plot":
-                self.plot_line(x, y)
+                self.plot_line(x, y, z)
             elif plot_type == "Bar Plot":
                 self.plot_bar(x, y, z)
             elif plot_type == "Scatter Plot":
