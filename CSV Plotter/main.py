@@ -11,7 +11,11 @@ class CSVPlotter:
         root.title("CSV Plotter")
 
         # Creating a master frame
-        self.frame = ctk.CTkScrollableFrame(self.root)
+        self.scrollable_frame = ctk.CTkScrollableFrame(master=self.root, fg_color="#48494a", border_width=15)
+        self.scrollable_frame.pack(fill='both', expand=True)
+
+        # Creating a content frame
+        self.frame = ctk.CTkFrame(master=self.scrollable_frame, fg_color="grey", border_width=5, border_color="brown")
         self.frame.pack(fill='both', expand=True)
 
         # Drop down menu
@@ -34,11 +38,6 @@ class CSVPlotter:
         self.canvas.get_tk_widget().pack(padx=10, pady=10)
 
         self.df = None
-
-        # Testing
-        for _ in range(50):
-            label = ctk.CTkLabel(master=self.frame, text="Login System", font=("Roboto", 24))
-            label.pack(pady=12, padx=10)
 
         # Creating statistics button
         stat_button = ctk.CTkButton(master=self.frame, text="Show statistics", command=self.show_statistics)
