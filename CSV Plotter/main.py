@@ -31,10 +31,13 @@ class CSVPlotter:
 
         self.df = None
 
+        # Creating statistics button
+        stat_button = ctk.CTkButton(master=root, text="Show statistics", command=self.show_statistics)
+        stat_button.pack(padx=10, pady=10)
 
         # Creating exit button
         exit_button = ctk.CTkButton(master=root, text="Exit", command=self.close_app)
-        exit_button.pack(padx=10, pady=10)
+        exit_button.pack(side="bottom", padx=10, pady=10)
 
     def close_app(self):
         self.root.quit()
@@ -124,6 +127,14 @@ class CSVPlotter:
             self.ax.set_aspect('auto')
             # Draws canvas
             self.canvas.draw()
+
+    def show_statistics(self):
+        textbox = ctk.CTkTextbox(master=self.root)
+        textbox.pack(padx=10, pady=10)
+        textbox.insert("0.0", self.df)
+        textbox.config(state="disabled")
+        print(self.df)
+
 
 if __name__ == "__main__":
     # Setting appearance mode (light, dark or system)
