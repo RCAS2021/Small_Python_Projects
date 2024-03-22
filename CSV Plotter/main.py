@@ -76,7 +76,15 @@ class CSVPlotter:
         else:
             data = self.df[columns[2]]
         
-        self.ax.pie(data, labels=labels, autopct='%1.1f%%', shadow=True, startangle=90, labeldistance=0.45, pctdistance=0.63, textprops={'horizontalalignment': 'center', 'verticalalignment': 'center'}, wedgeprops={'linewidth': 1}, radius=0.5, center=(0.5, 0.5))
+        # Finding index of max value
+        max_index = data.idxmax()
+
+        # Create an explode array (0, 0, 0, 0...)
+        explode = [0] * len(labels)
+        # Explode the index with the max value
+        explode[max_index] = 0.04
+
+        self.ax.pie(data, labels=labels, autopct='%1.1f%%', shadow=True, explode=explode, startangle=90, labeldistance=0.45, pctdistance=0.63, textprops={'horizontalalignment': 'center', 'verticalalignment': 'center'}, wedgeprops={'linewidth': 1}, radius=0.5, center=(0.5, 0.5))
         self.ax.set_xlabel(columns[0])  # Set x-label based on the selected attribute
         self.ax.set_ylabel(selected_attribute)  # Set y-label based on the selected attribute
         self.ax.axis("equal")
@@ -102,7 +110,6 @@ class CSVPlotter:
 
         # Plotting second dataset on second y-axis
         self.df.iloc[:,2].plot(kind="line", color="blue", ax=self.ax2)
-
 
     def plot_scatter(self, columns):
         self.ax2 = self.ax.twinx()  # Create a secondary y-axis
