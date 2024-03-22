@@ -21,13 +21,17 @@ class CSVPlotter:
         # Drop down menu
         self.plot_types = ["Line Plot", "Bar Plot", "Scatter Plot", "Pie"]
         self.plot_type_var = ctk.StringVar(value=self.plot_types[0])
-        self.old_plot="Line Plot"
         plot_menu = ctk.CTkOptionMenu(master=self.frame, values=[*self.plot_types], variable=self.plot_type_var, command=self.update_plot)
         plot_menu.pack(padx=10, pady=10)
 
+        # Pie Attributes drop down menu
+        self.attribute = ["Qtt", "Avg_Age"]
+        self.attribute_var = ctk.StringVar(value=self.attribute[0])
+        self.attribute_options = []
+
         # Creating load CSV button
-        load_button = ctk.CTkButton(master=self.frame, text="Load CSV", command=self.load_csv)
-        load_button.pack(padx=10, pady=10)
+        self.load_button = ctk.CTkButton(master=self.frame, text="Load CSV", command=self.load_csv)
+        self.load_button.pack(padx=10, pady=10)
 
         # Creating fig ax
         self.fig, self.ax = plt.subplots()
@@ -39,13 +43,14 @@ class CSVPlotter:
 
         self.df = None
 
-        # Creating statistics button
-        stat_button = ctk.CTkButton(master=self.frame, text="Show statistics", command=self.show_statistics)
-        stat_button.pack(padx=10, pady=10)
         # Creating statistics textbox
         self.textbox = ctk.CTkTextbox(master=self.frame, width=550, font=("roboto", 24), wrap='word')
         self.textbox.pack(padx=10, pady=10)
         self.textbox.configure(state="disabled")
+
+        # Creating statistics button
+        self.stat_button = ctk.CTkButton(master=self.frame, text="Show statistics", command=self.show_statistics)
+        self.stat_button.pack(before=self.textbox, padx=10, pady=10)
 
         # Creating exit button
         exit_button = ctk.CTkButton(master=self.frame, text="Exit", command=self.close_app)
@@ -63,57 +68,68 @@ class CSVPlotter:
     def plot_pie(self, x, y):
         explode = (0, 0.05, 0, 0)
         self.ax.pie(self.df[y], labels=self.df[x], autopct='%1.1f%%', explode=explode, shadow=True, startangle=90, labeldistance=0.45, pctdistance=0.63, textprops={'horizontalalignment': 'center', 'verticalalignment': 'center'}, wedgeprops={'linewidth': 1}, radius=0.5, center=(0.5, 0.5))
-        self.ax.legend(loc="lower right", ncol=len(self.df.columns))
         self.ax.axis("equal")
-        self.ax.set_xlabel(x)
-        self.ax.set_ylabel(y)
+    
+    def create_attribute_menu(self):
+        # Creating attribute menu
+        self.attribute_menu = ctk.CTkOptionMenu(master=self.frame, values=[*self.attribute_options], variable=self.attribute_var)
+        self.attribute_menu.pack(after=self.load_button, padx=10, pady=10)
 
-    def plot_bar(self, x, y, z):
+    def plot_bar(self, columns):
         # Recreate the ax2 object dynamically
         self.ax2 = self.ax.twinx()
-        # Setting y-axis range to be the same for both axes
-        ## Getting maximum Y axis value
-        ## Next, set_ylim
-        max_y = max(self.df.iloc[:,1].max(), self.df.iloc[:,2].max())
         # Plotting first dataset on y-axis
-        self.ax.set_title("Animals X Quantity X Average_Age")
         self.df.iloc[:,1].plot(kind="bar", color="red", ax=self.ax, width=0.4, position=1)
-        self.ax.legend(loc="upper left")
-        self.ax.set_ylim(0, max_y+10)
 
         # Plotting second dataset on second y-axis
-        self.df.iloc[:,2].plot(kind="bar", color="blue", ax=self.ax2, width=0.4, position=0)
-        self.ax2.legend(loc="upper right")
-        self.ax2.set_ylim(0, max_y+10)
+        self.df.iloc[:,2].plot(kind="bar", color="blue", ax=self.ax2, width=0.4, position=0) 
 
-        # Setting labels
-        self.ax.set_xlabel(x)
-        self.ax.set_ylabel(y)
-        self.ax2.set_ylabel(z)
-        # Aligning the y-axis to the left
-        self.ax.yaxis.set_label_position("left")
-        self.ax.yaxis.set_ticks_position("left")
-        # Aligning the secondary y-axis to the right
-        self.ax2.yaxis.set_label_position("right")
-        self.ax2.yaxis.set_ticks_position("right")
-        # Returning the x labels to animal names instead of index
-        x_values = range(len(self.df))
+    def plot_line(self, columns):
+        self.ax2 = self.ax.twinx()  # Create a secondary y-axis
+        # Plotting first dataset on y-axis
+        self.df.iloc[:,1].plot(kind="line", color="red", ax=self.ax)
+
+        # Plotting second dataset on second y-axis
+        self.df.iloc[:,2].plot(kind="line", color="blue", ax=self.ax2)
+
+
+    def plot_scatter(self, columns):
+        self.ax2 = self.ax.twinx()  # Create a secondary y-axis
+        # Plotting first dataset on y-axis
+        self.df.plot(kind="scatter", x=self.df.columns[0], y=self.df.columns[1], label=f"{columns[1]}", color="red", ax=self.ax)
+
+        # Plotting second dataset on second y-axis
+        self.df.plot(kind="scatter", x=self.df.columns[0], y=self.df.columns[2], label=f"{columns[2]}", color="blue", ax=self.ax)
+
+    def set_labels(self):
+        self.ax.set_xlabel(self.df.columns[0])
+        self.ax.set_ylabel(self.df.columns[1])
+        self.ax2.set_ylabel(self.df.columns[2])
+
+    def synchronize_y_axes(self, df, y_columns):
+        # Calculate the maximum y value from the specified columns in the DataFrame
+        max_y = max(df[y_columns].max())
+
+        # Adjust the y-axis limits for both axes
+        self.ax.set_ylim(0, max_y + 10)
+        self.ax2.set_ylim(0, max_y + 10)
+
+    def set_x_axis_labels(self, x_values, x_labels):
         self.ax.set_xticks(x_values)  # Set x-ticks at each index
-        self.ax.set_xticklabels(self.df[x], rotation=0)  # Set x-tick labels to animal names   
+        self.ax.set_xticklabels(x_labels, rotation=0)  # Set x-tick labels to animal names
 
-    def plot_line(self, x, y, z):
-        self.ax.plot(self.df[x], self.df[y], label=f"{y} vs {x}")
-        self.ax.plot(self.df[x], self.df[z], label=f"{x} vs {z}")
-        self.ax.legend(loc="best")
-        self.ax.set_xlabel(x)
-        self.ax.set_ylabel(y)
+    def create_combined_legends(self):
+        # Creating combined legends
+        # Get handles and labels for both axes
+        handles1, labels1 = self.ax.get_legend_handles_labels()
+        handles2, labels2 = self.ax2.get_legend_handles_labels()
 
-    def plot_scatter(self, x, y, z):
-        self.ax.scatter(self.df[x], self.df[y], label=f"{y} vs {x}")
-        self.ax.scatter(self.df[x], self.df[z], label=f"{x} vs {z}")
-        self.ax.legend(loc="best")
-        self.ax.set_xlabel(x)
-        self.ax.set_ylabel(y)
+        # Combine handles and labels
+        all_handles = handles1 + handles2
+        all_labels = labels1 + labels2
+
+        # Create a single legend
+        self.ax.legend(all_handles, all_labels, loc='upper center', bbox_to_anchor=(0.5, 1.15), ncol=2)
 
     def update_plot(self, event=None):
         if self.df is not None:
@@ -128,17 +144,40 @@ class CSVPlotter:
             # Add new Axes object
             self.ax = self.fig.add_subplot(111)
 
+            # Destroy the attribute menu if it exists
+            if hasattr(self, 'attribute_menu') and self.attribute_menu.winfo_exists():
+                self.attribute_menu.destroy()
+
             if plot_type == "Line Plot":
-                self.plot_line(x, y, z)
+                self.plot_line(list(self.df.columns))
             elif plot_type == "Bar Plot":
-                self.plot_bar(x, y, z)
+                self.plot_bar(list(self.df.columns))
             elif plot_type == "Scatter Plot":
-                self.plot_scatter(x, y, z)
+                self.plot_scatter(list(self.df.columns))
             elif plot_type == "Pie":
+                # Setting options to be columns then create attribute menu
+                self.attribute_options = list(self.df.columns[1:])
+                self.create_attribute_menu()
                 self.plot_pie(x, y)
+
+            # Creating combined legends
+            self.create_combined_legends()
+
+            if plot_type != "Pie":
+                # Setting title
+                self.ax.set_title("Animals X Quantity X Average_Age")
+
+                self.synchronize_y_axes(self.df, self.df.columns[1:])
+                # Set x-axis labels
+                x_values = range(len(self.df))
+                self.set_x_axis_labels(x_values, self.df[x])
+
+            # Setting labels
+            self.set_labels()
 
             # Set aspect ratio to auto
             self.ax.set_aspect('auto')
+
             # Draws canvas
             self.canvas.draw()
 
