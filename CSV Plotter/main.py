@@ -3,7 +3,7 @@ from customtkinter import filedialog
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-import matplotlib.patches as patches
+import numpy as np
 
 class CSVPlotter:
     def __init__(self, root):
@@ -43,7 +43,7 @@ class CSVPlotter:
         stat_button = ctk.CTkButton(master=self.frame, text="Show statistics", command=self.show_statistics)
         stat_button.pack(padx=10, pady=10)
         # Creating statistics textbox
-        self.textbox = ctk.CTkTextbox(master=self.frame, font=("roboto", 24), wrap='word')
+        self.textbox = ctk.CTkTextbox(master=self.frame, width=550, font=("roboto", 24), wrap='word')
         self.textbox.pack(padx=10, pady=10)
         self.textbox.configure(state="disabled")
 
@@ -142,10 +142,15 @@ class CSVPlotter:
 
     def show_statistics(self):
         self.textbox.configure(state="normal")
-        self.textbox.insert("0.0", self.df.columns)
+        biggest_average_age = max(self.df.Avg_Age)
+        most_quantity = max(self.df.Qtt)
+        most_animal = self.df.loc[self.df.Qtt == most_quantity]
+        most_animal = str(most_animal['Animals'].values).strip('[]').strip("'")
+        total_animal = sum(self.df.Qtt)
+        total_average = np.mean(self.df.Avg_Age)
+        self.textbox.insert("0.0", f"The biggest average age is: {biggest_average_age}\nThe animal type with most animals is: {most_animal} with {most_quantity} total\n" +
+                            f"There are {total_animal} animals in total\nThe average of all average ages is: {total_average}")
         self.textbox.configure(state="disabled")
-        print(self.df)
-
 
 if __name__ == "__main__":
     # Setting appearance mode (light, dark or system)
