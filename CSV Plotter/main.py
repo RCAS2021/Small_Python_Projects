@@ -10,33 +10,42 @@ class CSVPlotter:
         self.root = root
         root.title("CSV Plotter")
 
+        # Creating a master frame
+        self.frame = ctk.CTkScrollableFrame(self.root)
+        self.frame.pack(fill='both', expand=True)
+
         # Drop down menu
         self.plot_types = ["Line Plot", "Bar Plot", "Scatter Plot", "Pie"]
         self.plot_type_var = ctk.StringVar(value=self.plot_types[0])
         self.old_plot="Line Plot"
-        plot_menu = ctk.CTkOptionMenu(master=self.root, values=[*self.plot_types], variable=self.plot_type_var, command=self.update_plot)
+        plot_menu = ctk.CTkOptionMenu(master=self.frame, values=[*self.plot_types], variable=self.plot_type_var, command=self.update_plot)
         plot_menu.pack(padx=10, pady=10)
 
         # Creating load CSV button
-        load_button = ctk.CTkButton(self.root, text="Load CSV", command=self.load_csv)
+        load_button = ctk.CTkButton(master=self.frame, text="Load CSV", command=self.load_csv)
         load_button.pack(padx=10, pady=10)
 
         # Creating fig ax
         self.fig, self.ax = plt.subplots()
 
         # Creating canvas
-        self.canvas = FigureCanvasTkAgg(self.fig, master=self.root)
+        self.canvas = FigureCanvasTkAgg(self.fig, master=self.frame)
         self.canvas.draw()
         self.canvas.get_tk_widget().pack(padx=10, pady=10)
 
         self.df = None
 
+        # Testing
+        for _ in range(50):
+            label = ctk.CTkLabel(master=self.frame, text="Login System", font=("Roboto", 24))
+            label.pack(pady=12, padx=10)
+
         # Creating statistics button
-        stat_button = ctk.CTkButton(master=root, text="Show statistics", command=self.show_statistics)
+        stat_button = ctk.CTkButton(master=self.frame, text="Show statistics", command=self.show_statistics)
         stat_button.pack(padx=10, pady=10)
 
         # Creating exit button
-        exit_button = ctk.CTkButton(master=root, text="Exit", command=self.close_app)
+        exit_button = ctk.CTkButton(master=self.frame, text="Exit", command=self.close_app)
         exit_button.pack(side="bottom", padx=10, pady=10)
 
     def close_app(self):
@@ -129,10 +138,10 @@ class CSVPlotter:
             self.canvas.draw()
 
     def show_statistics(self):
-        textbox = ctk.CTkTextbox(master=self.root)
+        textbox = ctk.CTkTextbox(master=self.frame)
         textbox.pack(padx=10, pady=10)
-        textbox.insert("0.0", self.df)
-        textbox.config(state="disabled")
+        textbox.insert("0.0", self.df.columns)
+        textbox.configure(state="disabled")
         print(self.df)
 
 
@@ -148,6 +157,12 @@ if __name__ == "__main__":
 
     # Calling App
     app = CSVPlotter(root)
+
+    # Setting dimensions
+    root.minsize(500, 750)
+
+    # Setting resizable
+    root.resizable(True, True)
 
     # Mainloop which will cause this toplevel to run infinitely
     root.mainloop()
