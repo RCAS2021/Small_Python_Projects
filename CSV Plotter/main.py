@@ -192,14 +192,11 @@ class CSVPlotter:
 
     def show_statistics(self):
         self.textbox.configure(state="normal")
-        biggest_average_age = max(self.df.Avg_Age)
-        most_quantity = max(self.df.Qtt)
-        most_animal = self.df.loc[self.df.Qtt == most_quantity]
+        self.textbox.delete(1.0, "end")
+        most_animal = self.df.loc[self.df.Qtt == max(self.df.Qtt)]
         most_animal = str(most_animal['Animals'].values).strip('[]').strip("'")
-        total_animal = sum(self.df.Qtt)
-        total_average = np.mean(self.df.Avg_Age)
-        self.textbox.insert("0.0", f"The biggest average age is: {biggest_average_age}\nThe animal type with most animals is: {most_animal} with {most_quantity} total\n" +
-                            f"There are {total_animal} animals in total\nThe average of all average ages is: {total_average}")
+        self.textbox.insert("0.0", f"The biggest average age is: {max(self.df.Avg_Age)}\nThe animal type with most animals is: {most_animal} with {max(self.df.Qtt)} total\n" +
+                            f"There are {sum(self.df.Qtt)} animals in total\nThe average of all average ages is: {np.mean(self.df.Avg_Age)}")
         self.textbox.configure(state="disabled")
 
 if __name__ == "__main__":
