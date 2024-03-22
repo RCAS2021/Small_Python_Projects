@@ -64,6 +64,7 @@ Enter interative python shell
     python manage.py shell
 Explore database API -> https://docs.djangoproject.com/en/5.0/topics/db/queries/
 In shell enter:
+
     >>> from polls.models import Choice, Question -> Import the models classes
     >>> Question.objects.all() -> No questions in the system yet
     >>> from django.utils import timezone -> importing timezone methods
