@@ -25,7 +25,7 @@ class CSVPlotter:
         plot_menu.pack(padx=10, pady=10)
 
         # Pie Attributes drop down menu
-        self.attribute = ["Qtt", "Avg_Age"]
+        self.attribute = ["placeholder"]
         self.attribute_var = ctk.StringVar(value=self.attribute[0])
         self.attribute_options = []
 
@@ -63,16 +63,27 @@ class CSVPlotter:
         file_path = filedialog.askopenfilename()
         if file_path:
             self.df = pd.read_csv(file_path)
+            self.attribute_options = self.df.columns.tolist()
+            if self.attribute_options:
+                self.attribute = [self.attribute_options[1]]  # Set the attribute to the first column name
+                self.attribute_var.set(self.attribute[0])
             self.update_plot()
 
-    def plot_pie(self, x, y):
-        explode = (0, 0.05, 0, 0)
-        self.ax.pie(self.df[y], labels=self.df[x], autopct='%1.1f%%', explode=explode, shadow=True, startangle=90, labeldistance=0.45, pctdistance=0.63, textprops={'horizontalalignment': 'center', 'verticalalignment': 'center'}, wedgeprops={'linewidth': 1}, radius=0.5, center=(0.5, 0.5))
+    def plot_pie(self, columns, selected_attribute):
+        labels = self.df[columns[0]]
+        if selected_attribute == self.attribute[0]:
+            data = self.df[columns[1]]
+        else:
+            data = self.df[columns[2]]
+        
+        self.ax.pie(data, labels=labels, autopct='%1.1f%%', shadow=True, startangle=90, labeldistance=0.45, pctdistance=0.63, textprops={'horizontalalignment': 'center', 'verticalalignment': 'center'}, wedgeprops={'linewidth': 1}, radius=0.5, center=(0.5, 0.5))
+        self.ax.set_xlabel(columns[0])  # Set x-label based on the selected attribute
+        self.ax.set_ylabel(selected_attribute)  # Set y-label based on the selected attribute
         self.ax.axis("equal")
-    
+
     def create_attribute_menu(self):
         # Creating attribute menu
-        self.attribute_menu = ctk.CTkOptionMenu(master=self.frame, values=[*self.attribute_options], variable=self.attribute_var)
+        self.attribute_menu = ctk.CTkOptionMenu(master=self.frame, values=[*self.attribute_options], variable=self.attribute_var, command=self.update_plot)
         self.attribute_menu.pack(after=self.load_button, padx=10, pady=10)
 
     def plot_bar(self, columns):
@@ -134,9 +145,6 @@ class CSVPlotter:
     def update_plot(self, event=None):
         if self.df is not None:
             plot_type = self.plot_type_var.get()
-            x = self.df.columns[0]
-            y = self.df.columns[1]
-            z = self.df.columns[2]
 
             # Clear the figure and all axes
             self.fig.clear()
@@ -155,13 +163,11 @@ class CSVPlotter:
             elif plot_type == "Scatter Plot":
                 self.plot_scatter(list(self.df.columns))
             elif plot_type == "Pie":
-                # Setting options to be columns then create attribute menu
+            # Setting options to be columns then create attribute menu
                 self.attribute_options = list(self.df.columns[1:])
                 self.create_attribute_menu()
-                self.plot_pie(x, y)
-
-            # Creating combined legends
-            self.create_combined_legends()
+                selected_attribute = self.attribute_var.get()  # Get the selected attribute
+                self.plot_pie(list(self.df.columns), selected_attribute)  # Pass the selected attribute)
 
             if plot_type != "Pie":
                 # Setting title
@@ -170,10 +176,13 @@ class CSVPlotter:
                 self.synchronize_y_axes(self.df, self.df.columns[1:])
                 # Set x-axis labels
                 x_values = range(len(self.df))
-                self.set_x_axis_labels(x_values, self.df[x])
+                self.set_x_axis_labels(x_values, self.df[self.df.columns[0]])
+                
+                # Setting labels
+                self.set_labels()
 
-            # Setting labels
-            self.set_labels()
+            # Creating combined legends
+            self.create_combined_legends()
 
             # Set aspect ratio to auto
             self.ax.set_aspect('auto')
