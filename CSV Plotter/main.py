@@ -107,8 +107,9 @@ class CSVPlotter:
         self.ax.set_xlabel(x)
         self.ax.set_ylabel(y)
 
-    def plot_scatter(self, x, y):
+    def plot_scatter(self, x, y, z):
         self.ax.scatter(self.df[x], self.df[y], label=f"{y} vs {x}")
+        self.ax.scatter(self.df[x], self.df[z], label=f"{x} vs {z}")
         self.ax.legend(loc="best")
         self.ax.set_xlabel(x)
         self.ax.set_ylabel(y)
@@ -131,7 +132,7 @@ class CSVPlotter:
             elif plot_type == "Bar Plot":
                 self.plot_bar(x, y, z)
             elif plot_type == "Scatter Plot":
-                self.plot_scatter(x, y)
+                self.plot_scatter(x, y, z)
             elif plot_type == "Pie":
                 self.plot_pie(x, y)
 
