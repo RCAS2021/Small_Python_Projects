@@ -42,6 +42,10 @@ class CSVPlotter:
         # Creating statistics button
         stat_button = ctk.CTkButton(master=self.frame, text="Show statistics", command=self.show_statistics)
         stat_button.pack(padx=10, pady=10)
+        # Creating statistics textbox
+        self.textbox = ctk.CTkTextbox(master=self.frame, font=("roboto", 24), wrap='word')
+        self.textbox.pack(padx=10, pady=10)
+        self.textbox.configure(state="disabled")
 
         # Creating exit button
         exit_button = ctk.CTkButton(master=self.frame, text="Exit", command=self.close_app)
@@ -137,10 +141,9 @@ class CSVPlotter:
             self.canvas.draw()
 
     def show_statistics(self):
-        textbox = ctk.CTkTextbox(master=self.frame)
-        textbox.pack(padx=10, pady=10)
-        textbox.insert("0.0", self.df.columns)
-        textbox.configure(state="disabled")
+        self.textbox.configure(state="normal")
+        self.textbox.insert("0.0", self.df.columns)
+        self.textbox.configure(state="disabled")
         print(self.df)
 
 
