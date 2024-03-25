@@ -37,23 +37,32 @@ class App:
         # Adding widgets to second frame
         # Pause button
         self.pause_button = ctk.CTkButton(master=self.second_frame, text="Pause", font=("Calibri", 12), width=55, command=self.pause)
-        self.pause_button.pack(pady=10, side="left")
-        # Play button
-        self.resume_button = ctk.CTkButton(master=self.second_frame, text="Resume", font=("Calibri", 12), width=55, command=self.resume)
-        self.resume_button.pack(pady=10, side="right")
-        # Increase volume
-        self.increase_volume_button = ctk.CTkButton(master=self.second_frame, text="+", font=("Calibri", 12), width=10)
-        self.increase_volume_button.pack(pady=10, side="right")
-        self.increase_volume_button.bind('<ButtonPress-1>', self.start_increase_volume)
-        self.increase_volume_button.bind('<ButtonRelease-1>', self.stop_volume_change)
-        # Decrease volume
+        self.pause_button.grid(row=0, column=0, padx=(0, 10))
+
+        # Decrease volume button
         self.decrease_volume_button = ctk.CTkButton(master=self.second_frame, text="-", font=("Calibri", 12), width=10)
-        self.decrease_volume_button.pack(pady=10, side="left")
+        self.decrease_volume_button.grid(row=0, column=1)
         self.decrease_volume_button.bind('<ButtonPress-1>', self.start_decrease_volume)
         self.decrease_volume_button.bind('<ButtonRelease-1>', self.stop_volume_change)
-        # Label volume
+
+        # Volume label
         self.label_volume = ctk.CTkLabel(master=self.second_frame, text=f"{0:.0f}%", font=("Calibri", 12))
-        self.label_volume.pack(padx=10, pady=10, side="right")
+        self.label_volume.grid(row=0, column=2)
+
+        # Increase volume button
+        self.increase_volume_button = ctk.CTkButton(master=self.second_frame, text="+", font=("Calibri", 12), width=10)
+        self.increase_volume_button.grid(row=0, column=3)
+        self.increase_volume_button.bind('<ButtonPress-1>', self.start_increase_volume)
+        self.increase_volume_button.bind('<ButtonRelease-1>', self.stop_volume_change)
+
+        # Play button
+        self.resume_button = ctk.CTkButton(master=self.second_frame, text="Resume", font=("Calibri", 12), width=55, command=self.resume)
+        self.resume_button.grid(row=0, column=4, padx=(10, 0))
+
+        # Slider volume
+        self.slide_volume = ctk.CTkSlider(master=self.second_frame, from_=0, to=100, command=self.update_volume)
+        self.slide_volume.grid(row=1, column=0, columnspan=5, pady=(10, 0))
+
         # Exit button
         self.exit_button = ctk.CTkButton(master=self.frame, text="Exit", font=("Calibri", 12), width=10, command=self.close_app)
         self.exit_button.pack(pady=10)
@@ -100,12 +109,22 @@ class App:
     def start_increase_volume(self, event):
         self.volume_button_held = "increase"
         self.change_volume("increase")
-        self.after_id = self.root.after(80, self.continue_volume_change)
+        self.after_id = self.root.after(100, self.continue_volume_change)
 
     def start_decrease_volume(self, event):
         self.volume_button_held = "decrease"
         self.change_volume("decrease")
-        self.after_id = self.root.after(80, self.continue_volume_change)
+        self.after_id = self.root.after(100, self.continue_volume_change)
+
+    def delayed_increase_volume(self):
+        if self.volume_button_held == "increase":
+            self.change_volume("increase")
+            self.after_id = self.root.after(80, self.continue_volume_change)
+
+    def delayed_decrease_volume(self):
+        if self.volume_button_held == "decrease":
+            self.change_volume("decrease")
+            self.after_id = self.root.after(80, self.continue_volume_change)
 
     def stop_volume_change(self, event):
         self.volume_button_held = None
@@ -115,7 +134,16 @@ class App:
     def continue_volume_change(self):
         if self.volume_button_held:
             self.change_volume(self.volume_button_held)
-            self.after_id = self.root.after(100, self.continue_volume_change)
+            self.after_id = self.root.after(60, self.continue_volume_change)
+
+    def update_volume(self, value):
+        # Convert slider value from 0-100 to 0.0-1.0
+        self.current_volume = float(value) / 100
+        mixer.music.set_volume(self.current_volume)
+        if self.current_volume <= 0.009:
+            self.label_volume.configure(text_color="red", text="Muted")
+        else:
+            self.label_volume.configure(text_color="white", text=f"{self.current_volume*100:.0f}%")
 
     def pause(self):
         try:
