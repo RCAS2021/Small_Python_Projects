@@ -3,3 +3,4 @@ venv/*
 gitignore
 gitattributes
 __pycache__
+.pylintrc

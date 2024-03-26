@@ -1,19 +1,63 @@
+import pygame
 from pygame import mixer
 import customtkinter as ctk
 from customtkinter import filedialog
 
 class App:
-    def __init__(self, root):
+    """Custom Music Player Application.
+
+    This class implements a custom music player application using Tkinter for the GUI and Pygame for audio playback.
+
+    Attributes:
+        current_volume (float): The current volume level of the music player, ranging from 0.0 to 1.0.
+        root: The root Tkinter window.
+        volume_button_held (str): Indicates the direction of volume change being held, either 'increase', 'decrease', or None.
+        volume_change_step (float): The step size by which the volume changes on each increment or decrement.
+        frame: The main frame of the application's GUI.
+        label_title: The label displaying the title of the application.
+        label_select: The label prompting the user to select a music track.
+        button_select: The button for selecting a music track.
+        label_music_title: The label displaying the currently playing music title.
+        second_frame: The secondary frame containing playback controls and volume slider.
+        pause_button: The button to pause playback.
+        decrease_volume_button: The button to decrease volume.
+        label_volume: The label displaying the current volume level.
+        increase_volume_button: The button to increase volume.
+        resume_button: The button to resume playback.
+        slide_volume: The slider for adjusting volume.
+        exit_button: The button to exit the application.
+
+    Methods:
+        __init__: Initializes the App instance.
+        close_app: Closes the application.
+        select_music: Opens a file dialog for selecting a music track and plays it.
+        change_volume: Changes the volume level based on the specified direction.
+        start_increase_volume: Initiates continuous volume increase when the increase volume button is pressed.
+        start_decrease_volume: Initiates continuous volume decrease when the decrease volume button is pressed.
+        delayed_increase_volume: Performs delayed volume increase when the increase volume button is pressed.
+        delayed_decrease_volume: Performs delayed volume decrease when the decrease volume button is pressed.
+        stop_volume_change: Stops continuous volume change when the volume change button is released.
+        continue_volume_change: Continues continuous volume change until the volume change button is released.
+        pause: Pauses playback of the music track.
+        resume: Resumes playback of the music track.
+    """
+    def __init__(self, master):
+        """
+        Initialize the Custom Music Player application.
+
+        Parameters:
+        - root (tkinter.Tk): The root Tkinter instance for the application.
+        """
         self.current_volume = 0.5
-        self.root = root
+        self.master = master
 
         self.volume_button_held = None
         self.volume_change_step = 0.01
 
-        root.title("Custom Music Player")
+        master.title("Custom Music Player")
 
         # Creating main frame
-        self.frame = ctk.CTkFrame(master=root)
+        self.frame = ctk.CTkFrame(master=master)
         self.frame.pack(pady=10, padx=10, fill="none", expand=True)
 
         # Adding widgets to main frame
@@ -33,7 +77,7 @@ class App:
         # Creating play/pause/volume frame
         self.second_frame = ctk.CTkFrame(master=self.frame)
         self.second_frame.pack(after=self.label_music_title, padx=10, fill="none", expand=True)
-    
+
         # Adding widgets to second frame
         # Pause button
         self.pause_button = ctk.CTkButton(master=self.second_frame, text="Pause", font=("Calibri", 12), width=55, command=self.pause)
@@ -69,10 +113,15 @@ class App:
 
 
     def close_app(self):
-        """ Function for closing app when clicking exit button """
-        self.root.quit()
+        """
+        Close the Custom Music Player application.
+        """
+        self.master.quit()
 
     def select_music(self) -> None:
+        """
+        Open a file dialog to select a music track and play it.
+        """
         filepath = filedialog.askopenfilename(title="Select a music")
         if filepath:
             current_music = filepath
@@ -86,76 +135,131 @@ class App:
                 mixer.music.play()
                 self.label_music_title.configure(text=f"Now Playing: {str(music_title)}")
                 self.label_volume.configure(text=f"{self.current_volume*100:.0f}%")
-            except Exception as e:
+            except pygame.error as e:
                 print(e)
                 self.label_music_title.configure(text="Error playing track")
 
     def change_volume(self, direction):
-        if direction == "increase":
-            self.current_volume += self.volume_change_step
-        elif direction == "decrease":
-            self.current_volume -= self.volume_change_step
+        """
+        Change the volume of the music.
 
-        # Clamp volume to [0, 1]
-        self.current_volume = max(0, min(1, self.current_volume))
+        Parameters:
+        - direction (str): The direction of volume change ("increase" or "decrease").
+        """
+        try:
+            if direction == "increase":
+                self.current_volume += self.volume_change_step
+            elif direction == "decrease":
+                self.current_volume -= self.volume_change_step
 
-        mixer.music.set_volume(self.current_volume)
-        # Set volume
-        if self.current_volume <= 0.009:
-            self.label_volume.configure(text_color="red", text="Muted")
-        else:
-            self.label_volume.configure(text_color="white", text=f"{self.current_volume*100:.0f}%")
+            # Clamp volume to [0, 1]
+            self.current_volume = max(0, min(1, self.current_volume))
+
+            mixer.music.set_volume(self.current_volume)
+            # Set volume
+            if self.current_volume <= 0.009:
+                self.label_volume.configure(text_color="red", text="Muted")
+            else:
+                self.label_volume.configure(text_color="white", text=f"{self.current_volume*100:.0f}%")
+        except pygame.error as e:
+            print(e)
+            self.label_music_title.configure(text="Select the music first")
 
     def start_increase_volume(self, event):
+        """
+        Start increasing the volume when the volume increase button is pressed.
+
+        Parameters:
+        - event: The event object associated with the button press.
+        """
         self.volume_button_held = "increase"
         self.change_volume("increase")
-        self.after_id = self.root.after(100, self.continue_volume_change)
+        self.after_id = self.master.after(100, self.continue_volume_change)
 
     def start_decrease_volume(self, event):
+        """
+        Start decreasing the volume when the volume decrease button is pressed.
+
+        Parameters:
+        - event: The event object associated with the button press.
+        """
         self.volume_button_held = "decrease"
         self.change_volume("decrease")
-        self.after_id = self.root.after(100, self.continue_volume_change)
+        self.after_id = self.master.after(100, self.continue_volume_change)
 
     def delayed_increase_volume(self):
+        """
+        Increase the volume after a short delay if the volume increase button is held.
+        """
         if self.volume_button_held == "increase":
             self.change_volume("increase")
-            self.after_id = self.root.after(80, self.continue_volume_change)
+            self.after_id = self.master.after(80, self.continue_volume_change)
 
     def delayed_decrease_volume(self):
+        """
+        Decrease the volume after a short delay if the volume decrease button is held.
+        """
         if self.volume_button_held == "decrease":
             self.change_volume("decrease")
-            self.after_id = self.root.after(80, self.continue_volume_change)
+            self.after_id = self.master.after(80, self.continue_volume_change)
 
     def stop_volume_change(self, event):
+        """
+        Stop changing the volume when the volume increase/decrease button is released.
+
+        Parameters:
+        - event: The event object associated with the button release.
+        """
         self.volume_button_held = None
         if hasattr(self, 'after_id'):
-            self.root.after_cancel(self.after_id)
+            self.master.after_cancel(self.after_id)
 
     def continue_volume_change(self):
+        """
+        Continue changing the volume if the volume increase/decrease button is held.
+        """
         if self.volume_button_held:
             self.change_volume(self.volume_button_held)
-            self.after_id = self.root.after(60, self.continue_volume_change)
+            self.after_id = self.master.after(60, self.continue_volume_change)
 
     def update_volume(self, value):
-        # Convert slider value from 0-100 to 0.0-1.0
-        self.current_volume = float(value) / 100
-        mixer.music.set_volume(self.current_volume)
-        if self.current_volume <= 0.009:
-            self.label_volume.configure(text_color="red", text="Muted")
-        else:
-            self.label_volume.configure(text_color="white", text=f"{self.current_volume*100:.0f}%")
+        """
+        Update the volume of the music based on the slider value.
+
+        Parameters:
+        - value (float): The new volume value selected by the user on the slider.
+        """
+        try:
+            # Convert slider value from 0-100 to 0.0-1.0
+            self.current_volume = float(value) / 100
+            mixer.music.set_volume(self.current_volume)
+            if self.current_volume <= 0.009:
+                self.label_volume.configure(text_color="red", text="Muted")
+            else:
+                self.label_volume.configure(text_color="white", text=f"{self.current_volume*100:.0f}%")
+        except pygame.error as e:
+            print(e)
+            self.label_music_title.configure(text="Select the music first")
 
     def pause(self):
+        """
+        Pause the currently playing music.
+        """
         try:
             mixer.music.pause()
-        except Exception as e:
+        except pygame.error as e:
             print(e)
+            self.label_music_title.configure(text="Select the music first")
 
     def resume(self):
+        """
+        Resume playing the paused music.
+        """
         try:
             mixer.music.unpause()
-        except Exception as e:
+        except pygame.error as e:
             print(e)
+            self.label_music_title.configure(text="Select the music first")
 
 
 if __name__ == "__main__":
