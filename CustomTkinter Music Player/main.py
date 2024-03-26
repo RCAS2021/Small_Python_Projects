@@ -6,11 +6,11 @@ from customtkinter import filedialog
 class App:
     """Custom Music Player Application.
 
-    This class implements a custom music player application using Tkinter for the GUI and Pygame for audio playback.
+    This class implements a custom music player application using CustomTkinter for the GUI and Pygame for audio playback.
 
     Attributes:
         current_volume (float): The current volume level of the music player, ranging from 0.0 to 1.0.
-        root: The root Tkinter window.
+        master: The master Tkinter window.
         volume_button_held (str): Indicates the direction of volume change being held, either 'increase', 'decrease', or None.
         volume_change_step (float): The step size by which the volume changes on each increment or decrement.
         frame: The main frame of the application's GUI.
@@ -38,6 +38,7 @@ class App:
         delayed_decrease_volume: Performs delayed volume decrease when the decrease volume button is pressed.
         stop_volume_change: Stops continuous volume change when the volume change button is released.
         continue_volume_change: Continues continuous volume change until the volume change button is released.
+        update_volume: Updates the volume of the music based on the slider value.
         pause: Pauses playback of the music track.
         resume: Resumes playback of the music track.
     """
