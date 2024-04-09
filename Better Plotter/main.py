@@ -24,24 +24,31 @@ import matplotlib.pyplot as plt
 
 # Creating data for histogram using np.random distribution
 # Mean = 20, STD = 1.5, 1000 ages
-ages = np.random.normal(20, 1.5, 1000)
+#ages = np.random.normal(20, 1.5, 1000)
 
 # Creating histogram with some parameters
-plt.hist(ages)
+#plt.hist(ages)
 
 # Creating histogram and specifying bins
-plt.hist(ages,
-         bins=[ages.min(), 18, 21, ages.max()])
+#plt.hist(ages,
+#         bins=[ages.min(), 18, 21, ages.max()])
 
 # Another example
-plt.hist(ages,
-         bins=30)
+#plt.hist(ages,
+#         bins=30)
 
 # Creating histogram with cumulative
-plt.hist(ages,
-         bins=10,
-         cumulative=True)
+#plt.hist(ages,
+#         bins=10,
+#         cumulative=True)
 
+# Creating data for pie chart
+x = ["C++", "C#", "Python", "Java", "Go"]
+y = [20, 50, 140, 3, 45]
+explodes =[0, 0, 0, 0.2, 0]
+
+# Creating pie chart
+plt.pie(y, labels=x, explode=explodes, autopct="%.2f%%", startangle=90)
 
 
 
