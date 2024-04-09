@@ -57,19 +57,29 @@ import matplotlib.pyplot as plt
 
 # Plot customization example
 # Creating data
-years = [2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021]
-income = [55, 56, 62, 61, 71, 72, 73, 75]
+#years = [2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021]
+#income = [55, 56, 62, 61, 71, 72, 73, 75]
 
-income_ticks = list(range(50, 81, 2))
+#income_ticks = list(range(50, 81, 2))
 
-plt.plot(years, income)
-plt.title("Income per year (in USD)", fontsize=25, fontname="Arial")
-plt.xlabel("Year")
-plt.ylabel("Yearly income in USD")
+#plt.plot(years, income)
+#plt.title("Income per year (in USD)", fontsize=25, fontname="Arial")
+#plt.xlabel("Year")
+#plt.ylabel("Yearly income in USD")
 # Setting Y to plot according to income_ticks(start=50, finish=81, step=2)
 # And add K to represent thousand
-plt.yticks(income_ticks, [f"${x}k" for x in income_ticks])
+#plt.yticks(income_ticks, [f"${x}k" for x in income_ticks])
 
+# Creating data for multiple plots and legends example
+stock_a = [100, 102, 99, 101, 101, 100, 102]
+stock_b = [90, 95, 102, 104, 105, 103, 109]
+stock_c = [110, 115, 100, 105, 100, 98, 95]
 
+year = [2016, 2017, 2018, 2019, 2020, 2021, 2022]
+
+plt.plot(year, stock_a, label="Company A")
+plt.plot(year, stock_b, label="Company B")
+plt.plot(year, stock_c, label="Company C")
+plt.legend()
 
 plt.show()
