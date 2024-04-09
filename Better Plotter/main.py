@@ -139,4 +139,7 @@ axs[1, 1].set_title("Random Function")
 # Adding suptitle to figure
 fig.suptitle("Four plots example")
 
-plt.show()
+# Setting layout to tight to remove title overlap
+plt.tight_layout()
+# Exporting plot, dpi increases quality
+plt.savefig("Fourplots.png", dpi=300, transparent=True)
