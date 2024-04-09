@@ -145,16 +145,34 @@ import matplotlib.pyplot as plt
 #plt.savefig("Fourplots.png", dpi=300, transparent=True)
 
 # 3D Plotting
+#ax = plt.axes(projection="3d")
+
+#x = np.random.random(100)
+#y = np.random.random(100)
+#z = np.random.random(100)
+
+#ax.scatter(x, y, z)
+#ax.set_title("3D Scatter plot")
+#ax.set_xlabel("X")
+#ax.set_ylabel("Y")
+#ax.set_zlabel("Z")
+
+# Plotting surface
+
+# Creating 3D plot
 ax = plt.axes(projection="3d")
 
-x = np.random.random(100)
-y = np.random.random(100)
-z = np.random.random(100)
+# Creating data
+x = np.arange(-5, 5, 0.1)
+y = np.arange(-5, 5, 0.1)
 
-ax.scatter(x, y, z)
-ax.set_title("3D Scatter plot")
-ax.set_xlabel("X")
-ax.set_ylabel("Y")
-ax.set_zlabel("Z")
+# Creating mesh grid
+X, Y = np.meshgrid(x, y)
+
+Z = np.sin(X) * np.cos(Y)
+
+# Plotting surface
+ax.plot_surface(X, Y, Z, cmap="Spectral")
+ax.set_title("3D Surface")
 
 plt.show()
