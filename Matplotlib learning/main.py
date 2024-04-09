@@ -117,29 +117,44 @@ import matplotlib.pyplot as plt
 #plt.plot(x2, y2)
 
 # Creating subplots
-x = np.arange(100)
+#x = np.arange(100)
 
 # Creating subplots with 2 x 2 grid ((0,0), (0,1), (1,0), (1,1))
 # This will create 4 subplots in 1 figure
-fig, axs = plt.subplots(2, 2)
+#fig, axs = plt.subplots(2, 2)
 
 # To access the subplot
-axs[0, 0].plot(x, np.sin(x))
-axs[0, 0].set_title("Sine Wave")
+#axs[0, 0].plot(x, np.sin(x))
+#axs[0, 0].set_title("Sine Wave")
 
-axs[0, 1].plot(x, np.cos(x))
-axs[0, 1].set_title("Cosine Wave")
+#axs[0, 1].plot(x, np.cos(x))
+#axs[0, 1].set_title("Cosine Wave")
 
-axs[1, 0].plot(x, np.log(x))
-axs[1, 0].set_title("Log Function")
+#axs[1, 0].plot(x, np.log(x))
+#axs[1, 0].set_title("Log Function")
 
-axs[1, 1].plot(x, np.random.random(100))
-axs[1, 1].set_title("Random Function")
+#axs[1, 1].plot(x, np.random.random(100))
+#xs[1, 1].set_title("Random Function")
 
 # Adding suptitle to figure
-fig.suptitle("Four plots example")
+#fig.suptitle("Four plots example")
 
 # Setting layout to tight to remove title overlap
-plt.tight_layout()
+#plt.tight_layout()
 # Exporting plot, dpi increases quality
-plt.savefig("Fourplots.png", dpi=300, transparent=True)
+#plt.savefig("Fourplots.png", dpi=300, transparent=True)
+
+# 3D Plotting
+ax = plt.axes(projection="3d")
+
+x = np.random.random(100)
+y = np.random.random(100)
+z = np.random.random(100)
+
+ax.scatter(x, y, z)
+ax.set_title("3D Scatter plot")
+ax.set_xlabel("X")
+ax.set_ylabel("Y")
+ax.set_zlabel("Z")
+
+plt.show()
