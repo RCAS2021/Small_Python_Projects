@@ -51,15 +51,25 @@ import matplotlib.pyplot as plt
 #plt.pie(y, labels=x, explode=explodes, autopct="%.2f%%", startangle=90)
 
 # Creating data for boxplot
-heights = np.random.normal(172, 8, 300)
+#heights = np.random.normal(172, 8, 300)
 
-plt.boxplot(heights)
+#plt.boxplot(heights)
+
+# Plot customization example
+# Creating data
+years = [2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021]
+income = [55, 56, 62, 61, 71, 72, 73, 75]
+
+income_ticks = list(range(50, 81, 2))
+
+plt.plot(years, income)
+plt.title("Income per year (in USD)", fontsize=25, fontname="Arial")
+plt.xlabel("Year")
+plt.ylabel("Yearly income in USD")
+# Setting Y to plot according to income_ticks(start=50, finish=81, step=2)
+# And add K to represent thousand
+plt.yticks(income_ticks, [f"${x}k" for x in income_ticks])
+
 
 
 plt.show()
-
-
-
-
-
-
