@@ -16,11 +16,33 @@ import matplotlib.pyplot as plt
 #plt.plot(years, weights)
 
 # Creating data for bar plot
-x = ["C++", "C#", "Python", "Java", "Go"]
-y = [20, 50, 140, 3, 45]
+#x = ["C++", "C#", "Python", "Java", "Go"]
+#y = [20, 50, 140, 3, 45]
 
 # Creating bar plot with some parameters
-plt.bar(x, y)
+#plt.bar(x, y)
+
+# Creating data for histogram using np.random distribution
+# Mean = 20, STD = 1.5, 1000 ages
+ages = np.random.normal(20, 1.5, 1000)
+
+# Creating histogram with some parameters
+plt.hist(ages)
+
+# Creating histogram and specifying bins
+plt.hist(ages,
+         bins=[ages.min(), 18, 21, ages.max()])
+
+# Another example
+plt.hist(ages,
+         bins=30)
+
+# Creating histogram with cumulative
+plt.hist(ages,
+         bins=10,
+         cumulative=True)
+
+
 
 
 plt.show()
