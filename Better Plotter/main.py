@@ -43,13 +43,17 @@ import matplotlib.pyplot as plt
 #         cumulative=True)
 
 # Creating data for pie chart
-x = ["C++", "C#", "Python", "Java", "Go"]
-y = [20, 50, 140, 3, 45]
-explodes =[0, 0, 0, 0.2, 0]
+#x = ["C++", "C#", "Python", "Java", "Go"]
+#y = [20, 50, 140, 3, 45]
+#explodes =[0, 0, 0, 0.2, 0]
 
 # Creating pie chart
-plt.pie(y, labels=x, explode=explodes, autopct="%.2f%%", startangle=90)
+#plt.pie(y, labels=x, explode=explodes, autopct="%.2f%%", startangle=90)
 
+# Creating data for boxplot
+heights = np.random.normal(172, 8, 300)
+
+plt.boxplot(heights)
 
 
 plt.show()
