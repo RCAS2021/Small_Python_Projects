@@ -71,15 +71,34 @@ import matplotlib.pyplot as plt
 #plt.yticks(income_ticks, [f"${x}k" for x in income_ticks])
 
 # Creating data for multiple plots and legends example
-stock_a = [100, 102, 99, 101, 101, 100, 102]
-stock_b = [90, 95, 102, 104, 105, 103, 109]
-stock_c = [110, 115, 100, 105, 100, 98, 95]
+#stock_a = [100, 102, 99, 101, 101, 100, 102]
+#stock_b = [90, 95, 102, 104, 105, 103, 109]
+#stock_c = [110, 115, 100, 105, 100, 98, 95]
 
-year = [2016, 2017, 2018, 2019, 2020, 2021, 2022]
+#ear = [2016, 2017, 2018, 2019, 2020, 2021, 2022]
 
-plt.plot(year, stock_a, label="Company A")
-plt.plot(year, stock_b, label="Company B")
-plt.plot(year, stock_c, label="Company C")
-plt.legend()
+#plt.plot(year, stock_a, label="Company A")
+#plt.plot(year, stock_b, label="Company B")
+#plt.plot(year, stock_c, label="Company C")
+#plt.legend()
+
+# Plot Styling
+# Importing styles
+from matplotlib import style
+
+# Using style
+style.use("ggplot")
+# Links for style sheets
+# Link Styles: https://matplotlib.org/stable/gallery/style_sheets/style_sheets_reference.html
+# Link Customizations: https://matplotlib.org/stable/tutorials/introductory/customizing.html
+
+
+# Creating data for plot styling example
+votes = [10, 2, 5, 16 ,22]
+people = ["A", "B", "C", "D", "E"]
+
+# Plotting pie chart with added style
+plt.pie(votes, labels=None)
+plt.legend(labels=people)
 
 plt.show()
