@@ -160,19 +160,35 @@ import matplotlib.pyplot as plt
 # Plotting surface
 
 # Creating 3D plot
-ax = plt.axes(projection="3d")
+#ax = plt.axes(projection="3d")
 
 # Creating data
-x = np.arange(-5, 5, 0.1)
-y = np.arange(-5, 5, 0.1)
+#x = np.arange(-5, 5, 0.1)
+#y = np.arange(-5, 5, 0.1)
 
 # Creating mesh grid
-X, Y = np.meshgrid(x, y)
+#X, Y = np.meshgrid(x, y)
 
-Z = np.sin(X) * np.cos(Y)
+#Z = np.sin(X) * np.cos(Y)
 
 # Plotting surface
-ax.plot_surface(X, Y, Z, cmap="Spectral")
-ax.set_title("3D Surface")
+#ax.plot_surface(X, Y, Z, cmap="Spectral")
+#ax.set_title("3D Surface")
+
+# Creating animations
+# Importing random
+import random
+
+# Initializing heads and tails count
+heads_tails = [0, 0]
+
+# Making coin flips
+for _ in range(500):
+    # Making the coin flip (getting tails or heads as heads_tails[heads, tails]) and adding + 1 to the index
+    heads_tails[random.randint(0, 1)] += 1
+    # Plotting bar plot
+    plt.bar(["Heads", "Tails"], heads_tails, color=["red", "blue"])
+    # Using plot to show as animation
+    plt.pause(0.001)
 
 plt.show()
