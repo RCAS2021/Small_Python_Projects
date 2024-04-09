@@ -84,21 +84,39 @@ import matplotlib.pyplot as plt
 
 # Plot Styling
 # Importing styles
-from matplotlib import style
+#from matplotlib import style
 
 # Using style
-style.use("ggplot")
+#style.use("ggplot")
 # Links for style sheets
 # Link Styles: https://matplotlib.org/stable/gallery/style_sheets/style_sheets_reference.html
 # Link Customizations: https://matplotlib.org/stable/tutorials/introductory/customizing.html
 
 
 # Creating data for plot styling example
-votes = [10, 2, 5, 16 ,22]
-people = ["A", "B", "C", "D", "E"]
+#votes = [10, 2, 5, 16 ,22]
+#people = ["A", "B", "C", "D", "E"]
 
 # Plotting pie chart with added style
-plt.pie(votes, labels=None)
-plt.legend(labels=people)
+#plt.pie(votes, labels=None)
+#plt.legend(labels=people)
+
+# Creating multiple figures
+# Creating data
+x1, y1 = np.random.random(100), np.random.random(100)
+x2, y2 = np.arange(100), np.random.random(100)
+
+# Creating and specifying figure 1
+plt.figure(1)
+# Plotting a scatter plot in figure 1
+plt.scatter(x1, y1)
+
+# Creating and specifying figure 2
+plt.figure(2)
+# plotting a line plot in figure 2
+plt.plot(x2, y2)
+
+
+
 
 plt.show()
