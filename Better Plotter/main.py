@@ -103,20 +103,40 @@ import matplotlib.pyplot as plt
 
 # Creating multiple figures
 # Creating data
-x1, y1 = np.random.random(100), np.random.random(100)
-x2, y2 = np.arange(100), np.random.random(100)
+#x1, y1 = np.random.random(100), np.random.random(100)
+#x2, y2 = np.arange(100), np.random.random(100)
 
 # Creating and specifying figure 1
-plt.figure(1)
+#plt.figure(1)
 # Plotting a scatter plot in figure 1
-plt.scatter(x1, y1)
+#plt.scatter(x1, y1)
 
 # Creating and specifying figure 2
-plt.figure(2)
+#plt.figure(2)
 # plotting a line plot in figure 2
-plt.plot(x2, y2)
+#plt.plot(x2, y2)
 
+# Creating subplots
+x = np.arange(100)
 
+# Creating subplots with 2 x 2 grid ((0,0), (0,1), (1,0), (1,1))
+# This will create 4 subplots in 1 figure
+fig, axs = plt.subplots(2, 2)
 
+# To access the subplot
+axs[0, 0].plot(x, np.sin(x))
+axs[0, 0].set_title("Sine Wave")
+
+axs[0, 1].plot(x, np.cos(x))
+axs[0, 1].set_title("Cosine Wave")
+
+axs[1, 0].plot(x, np.log(x))
+axs[1, 0].set_title("Log Function")
+
+axs[1, 1].plot(x, np.random.random(100))
+axs[1, 1].set_title("Random Function")
+
+# Adding suptitle to figure
+fig.suptitle("Four plots example")
 
 plt.show()
