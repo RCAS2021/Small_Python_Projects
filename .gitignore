@@ -4,4 +4,4 @@ gitignore
 gitattributes
 __pycache__
 .pylintrc
-Better Plotter/*.png
+Matplotlib learning/*.png
