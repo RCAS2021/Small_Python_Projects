@@ -67,8 +67,13 @@ class Tile:
             ),
         )
 
-    def set_pos(self):
-        pass
+    def set_pos(self, ceil=False):
+        if ceil:
+            self.row = math.ceil(self.y / RECT_HEIGHT)
+            self.col = math.ceil(self.x / RECT_WIDTH)
+        else:
+            self.row = math.floor(self.y / RECT_HEIGHT)
+            self.col = math.floor(self.x / RECT_WIDTH)
 
     def move(self, delta):
         self.x += delta[0]
@@ -174,7 +179,26 @@ def move_tiles(window, tiles, clock, direction):
             else:
                 continue
 
+            tile.set_pos(ceil)
             updated = True
+        
+        update_tiles(window, tiles, sorted_tiles)
+    
+    return end_move(tiles)
+
+def end_move(tiles):
+    if len(tiles) == 16:
+        return "Game Ended"
+    row, col = get_random_pos(tiles)
+    tiles[f"{row}{col}"] = Tile(random.choice([2, 4]), row, col)
+    return "Continue"
+
+def update_tiles(window, tiles, sorted_tiles):
+    tiles.clear()
+    for tile in sorted_tiles:
+        tiles[f"{tile.row}{tile.col}"] = tile
+    
+    draw(window, tiles)
 
 def generate_tiles():
     tiles = {}
@@ -200,8 +224,17 @@ def main(window):
                 run = False
                 break
 
-        draw(window, tiles)
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT:
+                    move_tiles(window, tiles, clock, "left")
+                if event.key == pygame.K_RIGHT:
+                    move_tiles(window, tiles, clock, "right")
+                if event.key == pygame.K_UP:
+                    move_tiles(window, tiles, clock, "up")
+                if event.key == pygame.K_DOWN:
+                    move_tiles(window, tiles, clock, "down")
 
+        draw(window, tiles)
 
     pygame.quit()
 
