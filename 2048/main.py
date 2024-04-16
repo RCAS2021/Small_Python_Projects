@@ -118,10 +118,12 @@ def get_random_pos(tiles):
         # Checking if tile already exists
         if f"{row}{col}" not in tiles:
             break
+        elif len(tiles) > 16:
+            break
 
     return row, col
 
-def move_tiles(window, tiles, clock, direction):
+def move_tiles(window, tiles, clock, direction, blocked):
     updated = True
     blocks = set()
 
@@ -203,7 +205,7 @@ def move_tiles(window, tiles, clock, direction):
         for i, tile in enumerate(sorted_tiles):
             if boundary_check(tile):
                 continue
-            
+
             # Getting next tile
             next_tile = get_next_tile(tile)
             # If there isn't a next tile, move
@@ -226,23 +228,30 @@ def move_tiles(window, tiles, clock, direction):
 
             tile.set_pos(ceil)
             updated = True
-        
-        update_tiles(window, tiles, sorted_tiles)
-    
-    return end_move(tiles)
 
-def end_move(tiles):
+        update_tiles(window, tiles, sorted_tiles)
+    return end_move(tiles, direction, blocked)
+
+def end_move(tiles, direction, blocked):
     if len(tiles) == 16:
-        return "Game Ended"
+        blocked.append(direction)
+        print(f"Can't move {direction}")
+        if len(set(blocked)) > 3:
+            print("Lost")
+            return "Lost"
+        return "Blocked"
+
     row, col = get_random_pos(tiles)
     tiles[f"{row}{col}"] = Tile(random.choice([2, 4]), row, col)
+    while direction in blocked:
+        blocked.remove(direction)
     return "Continue"
 
 def update_tiles(window, tiles, sorted_tiles):
     tiles.clear()
     for tile in sorted_tiles:
         tiles[f"{tile.row}{tile.col}"] = tile
-    
+
     draw(window, tiles)
 
 def generate_tiles():
@@ -259,6 +268,7 @@ def main(window):
     run = True
 
     tiles = generate_tiles()
+    blocked = []
 
     while run:
         clock.tick(FPS)
@@ -271,13 +281,13 @@ def main(window):
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
-                    move_tiles(window, tiles, clock, "left")
+                    move_tiles(window, tiles, clock, "left", blocked)
                 if event.key == pygame.K_RIGHT:
-                    move_tiles(window, tiles, clock, "right")
+                    move_tiles(window, tiles, clock, "right", blocked)
                 if event.key == pygame.K_UP:
-                    move_tiles(window, tiles, clock, "up")
+                    move_tiles(window, tiles, clock, "up", blocked)
                 if event.key == pygame.K_DOWN:
-                    move_tiles(window, tiles, clock, "down")
+                    move_tiles(window, tiles, clock, "down", blocked)
 
         draw(window, tiles)
 
