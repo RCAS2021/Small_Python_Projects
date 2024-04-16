@@ -73,8 +73,6 @@ class Tile:
     def move(self, delta):
         pass
 
-
-
 def draw_grid(window):
     # Drawing horizontal lines
     for row in range(1, ROWS):
@@ -107,7 +105,7 @@ def get_random_pos(tiles):
 
     # Continue generating unless new tile
     while True:
-        # Generating xy
+        # Generating row, col
         row = random.randrange(0, ROWS)
         col = random.randrange(0, COLUMNS)
 
@@ -117,6 +115,36 @@ def get_random_pos(tiles):
 
     return row, col
 
+def move_tiles(window, tiles, clock, direction):
+    updated = True
+    blocks = set()
+
+    # Handling directions
+    if direction == "left":
+        # Gets columns
+        sort_func = lambda x: x.col
+        reverse = False
+        # Sets velocity
+        delta = (-MOVE_VELOCITY, 0)
+        # Checking if it's on the boundary
+        boundary_check = lambda tile: tile.col == 0
+        # Get tile to the left
+        get_next_tile = lambda tile: tiles.get(f"{tile.row}{tile.col - 1}")
+        # Checking if the tile should be merged
+        # Checks if after moving, the tile is overlapping the other
+        merge_check = lambda tile, next_tile: tile.x > next_tile.x + MOVE_VELOCITY
+        # Checks if tile doesn't have same value, move to the border of the next tile
+        move_check = (lambda tile, next_tile: tile.x > next_tile + RECT_WIDTH + MOVE_VELOCITY)
+        # Round up
+        ceil = True
+    elif direction == "right":
+    
+    elif direction == "up":
+    
+    elif direction == "down":
+    
+    
+
 def generate_tiles():
     tiles = {}
     for _ in range(2):
@@ -124,7 +152,6 @@ def generate_tiles():
         tiles[f"{row}{col}"] = Tile(2, row, col)
 
     return tiles
-
 
 def main(window):
     # Setting game speed
@@ -150,4 +177,3 @@ def main(window):
 
 if __name__ == "__main__":
     main(WINDOW)
-
