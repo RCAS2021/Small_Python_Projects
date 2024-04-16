@@ -101,7 +101,29 @@ def draw(window, tiles):
 
     pygame.display.update()
 
+def get_random_pos(tiles):
+    row = None
+    col = None
 
+    # Continue generating unless new tile
+    while True:
+        # Generating xy
+        row = random.randrange(0, ROWS)
+        col = random.randrange(0, COLUMNS)
+
+        # Checking if tile already exists
+        if f"{row}{col}" not in tiles:
+            break
+
+    return row, col
+
+def generate_tiles():
+    tiles = {}
+    for _ in range(2):
+        row, col = get_random_pos(tiles)
+        tiles[f"{row}{col}"] = Tile(2, row, col)
+
+    return tiles
 
 
 def main(window):
@@ -109,7 +131,7 @@ def main(window):
     clock = pygame.time.Clock()
     run = True
 
-    tiles = {}
+    tiles = generate_tiles()
 
     while run:
         clock.tick(FPS)
