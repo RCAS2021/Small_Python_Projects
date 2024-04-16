@@ -262,10 +262,18 @@ def generate_tiles():
 
     return tiles
 
+def show_message(message, window):
+    font = pygame.font.SysFont("comicsans", 60, bold=True)
+    text = font.render(message, True, (255, 255, 255))
+    text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+    window.blit(text, text_rect)
+    pygame.display.update()
+
 def main(window):
     # Setting game speed
     clock = pygame.time.Clock()
     run = True
+    game_over = False
 
     tiles = generate_tiles()
     blocked = []
@@ -279,17 +287,48 @@ def main(window):
                 run = False
                 break
 
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LEFT:
-                    move_tiles(window, tiles, clock, "left", blocked)
-                if event.key == pygame.K_RIGHT:
-                    move_tiles(window, tiles, clock, "right", blocked)
-                if event.key == pygame.K_UP:
-                    move_tiles(window, tiles, clock, "up", blocked)
-                if event.key == pygame.K_DOWN:
-                    move_tiles(window, tiles, clock, "down", blocked)
+            # Checking if game is over
+            if not game_over:
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_LEFT:
+                        result = move_tiles(window, tiles, clock, "left", blocked)
+                        if result == "Lost":
+                            game_over = True
+                    if event.key == pygame.K_RIGHT:
+                        result = move_tiles(window, tiles, clock, "right", blocked)
+                        if result == "Lost":
+                            game_over = True
+                    if event.key == pygame.K_UP:
+                        result = move_tiles(window, tiles, clock, "up", blocked)
+                        if result == "Lost":
+                            game_over = True
+                    if event.key == pygame.K_DOWN:
+                        result = move_tiles(window, tiles, clock, "down", blocked)
+                        if result == "Lost":
+                            game_over = True
+            else:
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    # Check if the click is within the retry button area
+                    mouse_x, mouse_y = pygame.mouse.get_pos()
+                    button_rect = pygame.Rect(WIDTH // 2 - 100, HEIGHT // 2 + 100, 200, 50)
+                    if button_rect.collidepoint(mouse_x, mouse_y):
+                        # Reset the game state
+                        tiles = generate_tiles()
+                        blocked = []
+                        game_over = False
 
-        draw(window, tiles)
+        # If game is over, display message and retry button
+        if game_over:
+            show_message("Game Over!", window)
+            pygame.draw.rect(window, (0, 0, 255), (WIDTH // 2 - 100, HEIGHT // 2 + 100, 200, 50))
+            font = pygame.font.SysFont("comicsans", 30, bold=True)
+            text = font.render("Retry", True, (255, 255, 255))
+            text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 125))
+            window.blit(text, text_rect)
+        else:
+            draw(window, tiles)
+
+        pygame.display.update()
 
     pygame.quit()
 
