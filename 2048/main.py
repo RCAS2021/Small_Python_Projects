@@ -140,11 +140,26 @@ def move_tiles(window, tiles, clock, direction):
         # Checks if after moving, the tile is overlapping the other
         merge_check = lambda tile, next_tile: tile.x > next_tile.x + MOVE_VELOCITY
         # Checks if tile doesn't have same value, move to the border of the next tile
-        move_check = (lambda tile, next_tile: tile.x > next_tile + RECT_WIDTH + MOVE_VELOCITY)
+        move_check = (lambda tile, next_tile: tile.x > next_tile.x + RECT_WIDTH + MOVE_VELOCITY)
         # Round up
         ceil = True
     elif direction == "right":
-    
+        # Gets columns
+        sort_func = lambda x: x.col
+        reverse = True
+        # Sets velocity
+        delta = (MOVE_VELOCITY, 0)
+        # Checking if it's on the boundary
+        boundary_check = lambda tile: tile.col == COLUMNS - 1
+        # Get tile to the left
+        get_next_tile = lambda tile: tiles.get(f"{tile.row}{tile.col + 1}")
+        # Checking if the tile should be merged
+        # Checks if after moving, the tile is overlapping the other
+        merge_check = lambda tile, next_tile: tile.x < next_tile.x - MOVE_VELOCITY
+        # Checks if tile doesn't have same value, move to the border of the next tile
+        move_check = (lambda tile, next_tile: tile.x + RECT_WIDTH + MOVE_VELOCITY < next_tile.x)
+        # Round up
+        ceil = False
     elif direction == "up":
     
     elif direction == "down":
