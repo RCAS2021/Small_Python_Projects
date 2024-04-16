@@ -71,7 +71,8 @@ class Tile:
         pass
 
     def move(self, delta):
-        pass
+        self.x += delta[0]
+        self.y += delta[1]
 
 def draw_grid(window):
     # Drawing horizontal lines
@@ -143,7 +144,37 @@ def move_tiles(window, tiles, clock, direction):
     
     elif direction == "down":
     
-    
+    while updated:
+        clock.tick(FPS)
+        updated = False
+        sorted_tiles = sorted(tiles.values(), key=sort_func, reverse=reverse)
+
+        # Iterating through tiles
+        for i, tile in enumerate(sorted_tiles):
+            if boundary_check(tile):
+                continue
+            
+            # Getting next tile
+            next_tile = get_next_tile(tile)
+            # If there isn't a next tile, move
+            if not next_tile:
+                tile.move(delta)
+            # If tile and next tile have the same value and not already merged
+            elif (tile.value == next_tile.value and tile not in blocks and next_tile not in blocks):
+                # Merge
+                if merge_check(tile, next_tile):
+                    tile.move(delta)
+                else:
+                    next_tile.value *= 2
+                    sorted_tiles.pop(i)
+                    blocks.add(next_tile)
+            # Move until border reached
+            elif move_check(tile, next_tile):
+                tile.move(delta)
+            else:
+                continue
+
+            updated = True
 
 def generate_tiles():
     tiles = {}
