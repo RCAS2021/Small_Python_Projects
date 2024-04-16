@@ -178,7 +178,22 @@ def move_tiles(window, tiles, clock, direction):
         # Round up
         ceil = True
     elif direction == "down":
-    
+        # Gets columns
+        sort_func = lambda x: x.row
+        reverse = True
+        # Sets velocity
+        delta = (0, MOVE_VELOCITY)
+        # Checking if it's on the boundary
+        boundary_check = lambda tile: tile.row == ROWS - 1
+        # Get tile to the left
+        get_next_tile = lambda tile: tiles.get(f"{tile.row + 1}{tile.col}")
+        # Checking if the tile should be merged
+        # Checks if after moving, the tile is overlapping the other
+        merge_check = lambda tile, next_tile: tile.y < next_tile.y - MOVE_VELOCITY
+        # Checks if tile doesn't have same value, move to the border of the next tile
+        move_check = (lambda tile, next_tile: tile.y + RECT_HEIGHT + MOVE_VELOCITY < next_tile.y)
+        # Round up
+        ceil = False
     while updated:
         clock.tick(FPS)
         updated = False
