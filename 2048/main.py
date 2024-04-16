@@ -26,4 +26,23 @@ FONT = pygame.font.SysFont("comicsans", 60, bold=True)
 # Velocity of rectangles movement
 MOVE_VELOCITY = 20
 
+def main(window):
+    # Setting game speed
+    clock = pygame.time.Clock()
+    run = True
+
+    while run:
+        clock.tick(FPS)
+
+        # Creating quit event loop
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+                break
+
+    pygame.quit()
+
+
+if __name__ == "__main__":
+    main(WINDOW)
 
