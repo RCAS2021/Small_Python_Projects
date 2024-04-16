@@ -7,7 +7,7 @@ pygame.init()
 
 # Defining constants
 FPS = 60
-WIDTH, HEIGHT = 800, 960
+WIDTH, HEIGHT = 800, 800
 ROWS = 4
 COLUMNS = 4
 RECT_HEIGHT = HEIGHT // ROWS
@@ -26,6 +26,29 @@ FONT = pygame.font.SysFont("comicsans", 60, bold=True)
 # Velocity of rectangles movement
 MOVE_VELOCITY = 20
 
+def draw_grid(window):
+    # Drawing horizontal lines
+    for row in range(1, ROWS):
+        y = row * RECT_HEIGHT
+        pygame.draw.line(window, OUTLINE_COLOR, (0, y), (WIDTH, y), OUTLINE_THICKNESS)
+
+    # Drawing vertical lines
+    for col in range(1, ROWS):
+        x = col * RECT_WIDTH
+        pygame.draw.line(window, OUTLINE_COLOR, (x, 0), (x, HEIGHT), OUTLINE_THICKNESS)
+
+
+    # Drawing border
+    pygame.draw.rect(window, OUTLINE_COLOR, (0, 0, WIDTH, HEIGHT), OUTLINE_THICKNESS)
+
+def draw(window):
+    # Changing background color
+    window.fill(BACKGROUND_COLOR)
+
+    draw_grid(window)
+
+    pygame.display.update()
+
 def main(window):
     # Setting game speed
     clock = pygame.time.Clock()
@@ -39,6 +62,9 @@ def main(window):
             if event.type == pygame.QUIT:
                 run = False
                 break
+
+        draw(window)
+
 
     pygame.quit()
 
