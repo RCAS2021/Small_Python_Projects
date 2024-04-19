@@ -109,7 +109,23 @@ MODEL = f"cardiffnlp/twitter-roberta-base-sentiment-latest"
 tokenizer = AutoTokenizer.from_pretrained(MODEL)
 model = AutoModelForSequenceClassification.from_pretrained(MODEL)
 
+# Comparing VADER result on example with the model
+print(sia.polarity_scores(example))
 
+# tokenizing the text
+encoded_text = tokenizer(example, return_tensors="pt")
 
+# Running model on encoded text -> returns a pytorch tensor
+output = model(**encoded_text)
+# Converting tensor to numpy
+scores = output[0][0].detach().numpy()
+# Applying softmax
+scores = softmax(scores)
 
-
+# Converting scores to a dictionary
+scores = {
+    "neg": scores[0],
+    "neu": scores[1],
+    "pos": scores[2],
+}
+print(scores)
