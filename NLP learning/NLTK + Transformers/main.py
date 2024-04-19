@@ -212,3 +212,12 @@ print(results_df.query("Score == 1").sort_values("vader_pos", ascending=False)["
 print(results_df.query("Score == 5").sort_values("roberta_neg", ascending=False)["Text"].values[0])
 # Now using VADER
 print(results_df.query("Score == 5").sort_values("vader_neg", ascending=False)["Text"].values[0])
+
+# Using Transformers Pipeline
+# https://huggingface.co/docs/transformers/main_classes/pipelines
+from transformers import pipeline
+
+sent_pipeline = pipeline("sentiment-analysis")
+print(sent_pipeline("I love sentiment analysis!"))
+print(sent_pipeline("I hate sentiment analysis!"))
+print(sent_pipeline("I kinda like sentiment analysis!"))
