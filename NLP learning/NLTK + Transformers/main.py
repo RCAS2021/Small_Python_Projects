@@ -41,6 +41,7 @@ nltk.download("words")
 entities = nltk.chunk.ne_chunk(tagged)
 entities.pprint()
 
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # Using VADER (Valence Aware Dictionary and sEntiment Reasoner)
 # Using bag of words approach
 # Stop words are removed (and, the, ...)
@@ -94,3 +95,21 @@ axs[1].set_title("Neutral")
 axs[2].set_title("Negative")
 plt.tight_layout()
 plt.show()
+
+
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# From hugging face, using transformer pretrained model Roberta
+#https://huggingface.co/cardiffnlp/twitter-roberta-base-sentiment-latest
+# These transformer models can detect words relations
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
+from scipy.special import softmax
+
+# Getting model
+MODEL = f"cardiffnlp/twitter-roberta-base-sentiment-latest"
+tokenizer = AutoTokenizer.from_pretrained(MODEL)
+model = AutoModelForSequenceClassification.from_pretrained(MODEL)
+
+
+
+
+
