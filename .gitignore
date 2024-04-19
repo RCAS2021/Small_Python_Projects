@@ -5,3 +5,4 @@ gitattributes
 __pycache__
 .pylintrc
 Matplotlib learning/*.png
+NLP learning/ NLTK + Transformers/CSV
