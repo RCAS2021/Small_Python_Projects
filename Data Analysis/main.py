@@ -137,8 +137,22 @@ counts, bins = np.histogram(data, bins=num_bins)
 # Assign frequency values to the corresponding bins
 df['Frequency'] = pd.cut(data, bins, labels=counts, include_lowest=True, ordered=False)
 
+# Convert 'Frequency' column to numerical type
+df['Frequency'] = df['Frequency'].astype(float)
+
 # Plotting the histogram with Seaborn
 sns.histplot(data=df, x='Speed_mph', bins=num_bins, kde=False, hue='Frequency', palette='viridis_r', edgecolor='black', linewidth=0.5)
+
+# Customizing legend intervals
+# Getting 10 intervals from max to min frequency
+legend_intervals = np.linspace(df['Frequency'].max(), df['Frequency'].min(), num=10, dtype=int)
+# Getting labels for each legend interval
+legend_labels = [f'{int(j)} - {int(i)}' for i, j in zip(legend_intervals[:-1], legend_intervals[1:])]
+
+# Manually setting legend colors
+colors = sns.color_palette('viridis', len(legend_labels))
+legend_handles = [plt.Line2D([0], [0], marker='o', color=color, label=label, markersize=5) for color, label in zip(colors, legend_labels)]
+plt.legend(handles=legend_handles, title='Frequency')
 
 # Setting title and labels
 plt.title("Speed (mph) Frequency")
@@ -158,6 +172,6 @@ df_corr = df[['Year_Introduced', 'Speed_mph', 'Height_ft', 'Inversions', 'Gforce
 df_corr = df_corr.corr()
 print(df_corr)
 
-# Using seaborn heatmap
+# Visualizing by using seaborn heatmap
 sns.heatmap(df_corr, annot=True)
 plt.show()
