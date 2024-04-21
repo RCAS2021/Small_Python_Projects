@@ -30,7 +30,7 @@ print(df.describe())
 # Step 2: Data Preparation
 ## Deleting irrelevant columns and rows
 ### Creating subset (Getting only the columns that will be used)
-df = df[['coaster_name', 'Location',
+df = df[['coaster_name', 'Location', 'Length',
         'Status', 'Manufacturer',
         'year_introduced', 'latitude',
         'longitude', 'Type_Main',
@@ -174,4 +174,19 @@ print(df_corr)
 
 # Visualizing by using seaborn heatmap
 sns.heatmap(df_corr, annot=True)
+plt.show()
+
+# Asking questions about the data
+
+# Q1: What are the locations with the fastest roller coasters (minimum of 10)?
+# Getting fastest roller coasters groupped by location,
+# by average speed where count >= 10
+fastest = df.query('Location != "Other"').groupby('Location')['Speed_mph'].agg(['mean', 'count']).query('count >= 10')
+# Sorting values by mean in descending order
+fastest.sort_values('mean', ascending=True)
+
+# Plotting horizontal bar plot
+ax = fastest['mean'].sort_values(ascending=False).plot(kind='barh', title='Average Coaster Speed(mph) by Location')
+ax.set_xlabel('Average Coaster Speed(mph)')
+
 plt.show()
