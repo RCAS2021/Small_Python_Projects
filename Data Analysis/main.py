@@ -190,3 +190,59 @@ ax = fastest['mean'].sort_values(ascending=False).plot(kind='barh', title='Avera
 ax.set_xlabel('Average Coaster Speed(mph)')
 
 plt.show()
+
+# Q2: Which are the longest roller coasters?
+# By getting the longest by sorting the values using the length column there will be errors
+longest = df[df['Length'].notna()].copy()
+longest = df.sort_values('Length', ascending=False)
+print(longest)
+
+# It returns a wrong table, seeing why below
+# The dataset has lengths that are ranges and not values,
+# It also has both feet and meters, which need to be converted,
+# It also has numbers that are formatted with commas and without commas
+
+# Fixing the issues
+import re
+
+# Creating a function to process the length
+def process_length(length):
+    # Getting the length as a String
+    length_str = str(length)
+    # Using regex to find the numbers written in meters
+    # \( and \) <- escaping parenthesis to match them literally
+    # \d{1,3} <- matches 1 to 3 digits (thousands) at the beginning
+    # (,\d{3})* <- matches zero or more occurrences of a comma followed by exactly three digits (thousands separator)
+    # (\.\d+)? <- matches an optional decimal point followed by one or more digits (decimal part)
+    # \s* <- matches zero or more whitespaces
+    # m <- matches the letter m
+    m_match = re.search(r'\((\d{1,3}(,\d{3})*(\.\d+)?)\s*m\)', length_str)
+    if m_match:
+        m_value = float(m_match.group(1).replace(',', ''))
+        return m_value
+    else:
+        # Using regex to find the numbers written in feet
+        ft_match = re.search(r'\((\d{1,3}(,\d{3})*(\.\d+)?)\s*ft\)', length_str)
+        if ft_match:
+            ft_value = float(ft_match.group(1).replace(',', ''))
+            return ft_value * 0.3048
+    return None
+
+# Applying the function to the 'Length' column and storing the result in a new column 'Length_m'
+df['Length_m'] = df['Length'].apply(process_length)
+
+# Sorting the DataFrame by 'Length_m' in descending order and selecting the top 10 longest roller coasters
+longest = df.sort_values('Length_m', ascending=False)
+print(longest)
+
+# Plotting a scatter plot comparing length with speed
+ax = longest.plot(kind='scatter', x='Length_m', y='Speed_mph')
+ax.set_xlabel('Length in meters')
+ax.set_ylabel('Speed in mph')
+ax.set_title('Length x Speed comparison')
+plt.show()
+
+# Plotting a heatmap to check the correlations
+longest_corr = longest[['Year_Introduced', 'Height_ft', 'Inversions', 'Gforce', 'Length_m', 'Speed_mph']].corr()
+sns.heatmap(longest_corr, annot=True)
+plt.show()
