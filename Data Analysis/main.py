@@ -68,3 +68,49 @@ print(df.query('Coaster_Name == "Crystal Beach Cyclone"'))
 
 # Removing duplicates
 df = df.loc[~df.duplicated(subset=["Coaster_Name", "Location", "Opening_Date"])].reset_index(drop=True).copy()
+
+# Feature Understanding (Univariate Analysis)
+
+# Counting how many coasters introduced in each year
+print(df['Year_Introduced'].value_counts())
+
+# Plotting the counts for 10 most common years
+year_count = df['Year_Introduced'].value_counts().head(10)
+year_count.plot(kind='bar')
+plt.title('Top 10 Years with Most Coasters Introduced')
+plt.xlabel('Year')
+plt.ylabel('Number of Coasters')
+plt.show()
+
+# Plotting speed frequency histogram, with more frequency = darker tone
+data = df['Speed_mph']
+num_bins = 25
+
+# Plotting the histogram
+counts, bins, patches = plt.hist(data, bins=num_bins, edgecolor='black', linewidth=0.5)
+
+# Calculate the maximum frequency
+max_count = max(counts)
+
+# Calculate tonality of colors based on frequency
+tonalities = counts / max_count
+
+# Define custom colormap transitioning from green -> blue
+colors = plt.cm.viridis_r(0.1 + 0.8 * tonalities)  # Interpolate from green to blue
+
+# Applying colors to patches
+for color, patch in zip(colors, patches):
+    patch.set_facecolor(color)
+
+# Setting title and labels
+plt.title("Speed (mph) Frequency")
+plt.xlabel("Speed (mph)")
+plt.ylabel("Frequency")
+
+plt.show()
+
+# Plotting KDE (Kernel Density Estimation) for speed frequency
+ax = df['Speed_mph'].plot(kind='kde')
+ax.set_xlabel("Speed (mph)")
+ax.set_title("KDE Speed(mph)")
+plt.show()
