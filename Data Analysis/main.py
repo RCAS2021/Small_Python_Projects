@@ -114,3 +114,50 @@ ax = df['Speed_mph'].plot(kind='kde')
 ax.set_xlabel("Speed (mph)")
 ax.set_title("KDE Speed(mph)")
 plt.show()
+
+# Feature Relationships
+
+# Plotting a scatter plot to compare two columns (speed x height)
+df.plot(kind="scatter", x="Speed_mph", y="Height_ft", title="Coaster speed x height")
+plt.show()
+
+# Now using Seaborn
+# Plotting the scatter plot
+sns.scatterplot(x="Speed_mph", y="Height_ft", hue='Year_Introduced', data=df)
+plt.show()
+
+# Plotting the speed frequency histogram
+# Remove NaN values from the 'Speed_mph' column
+data = df['Speed_mph'].dropna()
+
+# Calculate frequency
+num_bins = 25
+counts, bins = np.histogram(data, bins=num_bins)
+
+# Assign frequency values to the corresponding bins
+df['Frequency'] = pd.cut(data, bins, labels=counts, include_lowest=True, ordered=False)
+
+# Plotting the histogram with Seaborn
+sns.histplot(data=df, x='Speed_mph', bins=num_bins, kde=False, hue='Frequency', palette='viridis_r', edgecolor='black', linewidth=0.5)
+
+# Setting title and labels
+plt.title("Speed (mph) Frequency")
+plt.xlabel("Speed (mph)")
+plt.ylabel("Frequency")
+
+plt.show()
+
+# Comparing using Seaborn pairplot
+sns.pairplot(data=df, vars=['Year_Introduced', 'Speed_mph', 'Height_ft', 'Inversions', 'Gforce'], hue="Type_Main")
+plt.show()
+
+# Getting correlation
+# Removing NaN values
+df_corr = df[['Year_Introduced', 'Speed_mph', 'Height_ft', 'Inversions', 'Gforce']].dropna()
+# Printing correlation
+df_corr = df_corr.corr()
+print(df_corr)
+
+# Using seaborn heatmap
+sns.heatmap(df_corr, annot=True)
+plt.show()
