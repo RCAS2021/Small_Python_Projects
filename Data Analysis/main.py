@@ -233,7 +233,6 @@ df['Length_m'] = df['Length'].apply(process_length)
 
 # Sorting the DataFrame by 'Length_m' in descending order and selecting the top 10 longest roller coasters
 longest = df.sort_values('Length_m', ascending=False)
-print(longest)
 
 # Plotting a scatter plot comparing length with speed
 ax = longest.plot(kind='scatter', x='Length_m', y='Speed_mph')
