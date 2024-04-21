@@ -6,3 +6,4 @@ __pycache__
 .pylintrc
 Matplotlib learning/*.png
 NLP learning/NLTK + Transformers/CSV
+Data Analysis/CSV
