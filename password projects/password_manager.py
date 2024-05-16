@@ -39,7 +39,6 @@ def add_master():
 
 # RUN IF TEXT FILE DOESN'T EXIST
 if  os.path.exists("passwords.txt"):
-
     while True:
         with open("passwords.txt", "r", encoding="utf8") as f:
             master = f.readline().rstrip().split("|")
